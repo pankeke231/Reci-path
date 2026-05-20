@@ -1,0 +1,4 @@
+rol,document_id,nombres,apellidos,direccion,celular,email,password,como_crear,notas
+ciudadano,1001001001,María Fernanda,López García,Calle 15 # 23-45 Cali Valle,+573001110001,ciudadano@sea-prueba.test,SeaPrueba2026!,Registro en app (Ciudadano),Crear pedidos
+recolector,1002002002,Carlos Andrés,Ruiz Mejía,Av 6N # 28-12 Cali Valle,+573002220002,recolector@sea-prueba.test,SeaPrueba2026!,Registro en app (Recolector),Rutas y pedidos asignados
+admin,1003003003,Ana Patricia,Torres Díaz,Carrera 100 # 7-21 Cali Valle,+573003330003,admin@sea-prueba.test,SeaPrueba2026!,Registro Ciudadano + UPDATE role admin,Panel administrativo
