@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
-import COLORS from '../../constants/colors';
-import { SPACING, TYPOGRAPHY } from '../theme/spacing';
+import { StyleSheet, Text, View } from "react-native";
+import COLORS from "../../constants/colors";
+import { SPACING, TYPOGRAPHY } from "../theme/spacing";
 
 export default function SectionHeader({ title, subtitle }) {
   return (

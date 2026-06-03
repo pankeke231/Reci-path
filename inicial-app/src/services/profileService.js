@@ -1,6 +1,6 @@
-import { TABLES } from '../constants/tables';
-import { createUserProfile } from '../models/user';
-import { createCrudService } from './baseCrudService';
+import { TABLES } from "../constants/tables";
+import { createUserProfile } from "../models/user";
+import { createCrudService } from "./baseCrudService";
 
 const crud = createCrudService(TABLES.PROFILES);
 

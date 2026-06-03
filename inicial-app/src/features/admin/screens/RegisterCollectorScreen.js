@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   Alert,
   Pressable,
@@ -7,21 +7,21 @@ import {
   Text,
   TextInput,
   View,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import COLORS from '../../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
-import { Screen } from '../../../ui/components';
-import { adminService } from '../../../services/adminService';
-import { getErrorMessage } from '../../../utils/errors';
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import COLORS from "../../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
+import { Screen } from "../../../ui/components";
+import { adminService } from "../../../services/adminService";
+import { getErrorMessage } from "../../../utils/errors";
 import {
   isValidCellPhone,
   isValidDocumentId,
   isValidEmail,
   isValidPassword,
-} from '../../../utils/validators';
+} from "../../../utils/validators";
 
 function Field({ label, children }) {
   return (
@@ -34,39 +34,41 @@ function Field({ label, children }) {
 
 export default function RegisterCollectorScreen() {
   const navigation = useNavigation();
-  const [documentId, setDocumentId] = useState('');
-  const [firstNames, setFirstNames] = useState('');
-  const [lastNames, setLastNames] = useState('');
-  const [address, setAddress] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [documentId, setDocumentId] = useState("");
+  const [firstNames, setFirstNames] = useState("");
+  const [lastNames, setLastNames] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [vehicleType, setVehicleType] = useState("");
+  const [licensePlate, setLicensePlate] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
     if (!isValidDocumentId(documentId)) {
-      Alert.alert('Validación', 'Nº de identidad inválido');
+      Alert.alert("Validación", "Nº de identidad inválido");
       return;
     }
     if (!firstNames.trim() || !lastNames.trim()) {
-      Alert.alert('Validación', 'Nombres y apellidos son obligatorios');
+      Alert.alert("Validación", "Nombres y apellidos son obligatorios");
       return;
     }
     if (!address.trim()) {
-      Alert.alert('Validación', 'La dirección es obligatoria');
+      Alert.alert("Validación", "La dirección es obligatoria");
       return;
     }
     if (!isValidCellPhone(phone)) {
-      Alert.alert('Validación', 'Celular inválido');
+      Alert.alert("Validación", "Celular inválido");
       return;
     }
     if (!isValidEmail(email)) {
-      Alert.alert('Validación', 'Correo inválido');
+      Alert.alert("Validación", "Correo inválido");
       return;
     }
     if (!isValidPassword(password)) {
-      Alert.alert('Validación', 'Contraseña mínimo 6 caracteres');
+      Alert.alert("Validación", "Contraseña mínimo 6 caracteres");
       return;
     }
 
@@ -80,12 +82,16 @@ export default function RegisterCollectorScreen() {
         phone,
         email,
         password,
+        vehicleType,
+        licensePlate,
       });
-      Alert.alert('Recolector registrado', 'El usuario fue creado correctamente.', [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
+      Alert.alert(
+        "Recolector registrado",
+        "El usuario fue creado correctamente.",
+        [{ text: "OK", onPress: () => navigation.goBack() }],
+      );
     } catch (error) {
-      Alert.alert('Error', getErrorMessage(error));
+      Alert.alert("Error", getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -102,7 +108,7 @@ export default function RegisterCollectorScreen() {
           style={styles.iconBtn}
         >
           <Ionicons
-            name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+            name={showPassword ? "eye-off-outline" : "eye-outline"}
             size={22}
             color={COLORS.textPrimary}
           />
@@ -115,7 +121,8 @@ export default function RegisterCollectorScreen() {
       >
         <Text style={styles.title}>Registrar reciclador</Text>
         <Text style={styles.subtitle}>
-          Ingresa los datos para dar de alta a un nuevo recolector en el sistema.
+          Ingresa los datos para dar de alta a un nuevo recolector en el
+          sistema.
         </Text>
 
         <Field label="Nº IDENTIDAD">
@@ -188,12 +195,31 @@ export default function RegisterCollectorScreen() {
             />
             <Pressable onPress={() => setShowPassword((v) => !v)}>
               <Ionicons
-                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                name={showPassword ? "eye-off-outline" : "eye-outline"}
                 size={20}
                 color={COLORS.textMuted}
               />
             </Pressable>
           </View>
+        </Field>
+        <Field label="TIPO DE VEHÍCULO">
+          <TextInput
+            style={styles.input}
+            value={vehicleType}
+            onChangeText={setVehicleType}
+            placeholder="Ej: Moto, Camión, Bicicleta"
+            placeholderTextColor={COLORS.textMuted}
+          />
+        </Field>
+        <Field label="PLACA">
+          <TextInput
+            style={styles.input}
+            value={licensePlate}
+            onChangeText={setLicensePlate}
+            placeholder="Ej: ABC123"
+            placeholderTextColor={COLORS.textMuted}
+            autoCapitalize="characters"
+          />
         </Field>
 
         <Pressable onPress={handleRegister} disabled={loading}>
@@ -205,7 +231,7 @@ export default function RegisterCollectorScreen() {
           >
             <Ionicons name="person-add-outline" size={20} color={COLORS.bg} />
             <Text style={styles.submitText}>
-              {loading ? 'Registrando…' : 'Registrar'}
+              {loading ? "Registrando…" : "Registrar"}
             </Text>
           </LinearGradient>
         </Pressable>
@@ -216,16 +242,16 @@ export default function RegisterCollectorScreen() {
 
 const styles = StyleSheet.create({
   topBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: SPACING.lg,
     paddingTop: SPACING.sm,
   },
   iconBtn: {
     width: 40,
     height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   scroll: {
     paddingHorizontal: SPACING.lg,
@@ -248,7 +274,7 @@ const styles = StyleSheet.create({
   label: {
     ...TYPOGRAPHY.caption,
     color: COLORS.textSecondary,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.6,
     marginBottom: SPACING.sm,
   },
@@ -263,17 +289,17 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   passwordRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: SPACING.sm,
   },
   passwordInput: {
     flex: 1,
   },
   submitBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: SPACING.sm,
     paddingVertical: SPACING.md + 2,
     borderRadius: RADIUS.md,
@@ -283,6 +309,6 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.label,
     color: COLORS.bg,
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 });

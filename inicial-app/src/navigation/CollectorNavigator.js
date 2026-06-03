@@ -1,10 +1,10 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import COLORS from '../constants/colors';
-import CollectorHomeScreen from '../features/collector/screens/CollectorHomeScreen';
-import CollectorHistoryScreen from '../features/collector/screens/CollectorHistoryScreen';
-import CollectorOrderDetailScreen from '../features/collector/screens/CollectorOrderDetailScreen';
-import CollectorRoutesScreen from '../features/collector/screens/CollectorRoutesScreen';
-import ProfileScreen from '../features/profile/screens/ProfileScreen';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import COLORS from "../constants/colors";
+import CollectorHomeScreen from "../features/collector/screens/CollectorHomeScreen";
+import CollectorHistoryScreen from "../features/collector/screens/CollectorHistoryScreen";
+import CollectorOrderDetailScreen from "../features/collector/screens/CollectorOrderDetailScreen";
+import CollectorRoutesScreen from "../features/collector/screens/CollectorRoutesScreen";
+import ProfileScreen from "../features/profile/screens/ProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,7 +14,7 @@ export default function CollectorNavigator() {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: COLORS.bg },
-        animation: 'slide_from_right',
+        animation: "slide_from_right",
       }}
     >
       <Stack.Screen name="CollectorHome" component={CollectorHomeScreen} />

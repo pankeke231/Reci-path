@@ -1,4 +1,4 @@
-import { supabase } from './supabase/client';
+import { supabase } from "./supabase/client";
 
 /**
  * Servicio CRUD genérico reutilizable sobre tablas de Supabase.
@@ -15,9 +15,9 @@ export function createCrudService(tableName) {
      * @param {number} [options.limit]
      */
     async list({
-      select = '*',
+      select = "*",
       filters = {},
-      orderBy = 'created_at',
+      orderBy = "created_at",
       ascending = false,
       limit,
     } = {}) {
@@ -41,11 +41,11 @@ export function createCrudService(tableName) {
      * @param {string} id
      * @param {string} [select]
      */
-    async getById(id, select = '*') {
+    async getById(id, select = "*") {
       const { data, error } = await supabase
         .from(tableName)
         .select(select)
-        .eq('id', id)
+        .eq("id", id)
         .maybeSingle();
 
       if (error) throw error;
@@ -56,7 +56,7 @@ export function createCrudService(tableName) {
      * @param {Object} payload
      * @param {string} [select]
      */
-    async create(payload, select = '*') {
+    async create(payload, select = "*") {
       const { data, error } = await supabase
         .from(tableName)
         .insert(payload)
@@ -72,11 +72,11 @@ export function createCrudService(tableName) {
      * @param {Object} payload
      * @param {string} [select]
      */
-    async update(id, payload, select = '*') {
+    async update(id, payload, select = "*") {
       const { data, error } = await supabase
         .from(tableName)
         .update({ ...payload, updated_at: new Date().toISOString() })
-        .eq('id', id)
+        .eq("id", id)
         .select(select)
         .single();
 
@@ -88,7 +88,7 @@ export function createCrudService(tableName) {
      * @param {string} id
      */
     async remove(id) {
-      const { error } = await supabase.from(tableName).delete().eq('id', id);
+      const { error } = await supabase.from(tableName).delete().eq("id", id);
       if (error) throw error;
       return true;
     },

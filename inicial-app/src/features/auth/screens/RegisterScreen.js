@@ -1,209 +1,338 @@
-import { useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useAuth } from '../../../hooks/useAuth';
-import { REGISTERABLE_ROLES, ROLE_LABELS, ROLES } from '../../../constants/roles';
-import COLORS from '../../../constants/colors';
-import { SPACING, TYPOGRAPHY, RADIUS } from '../../../ui/theme/spacing';
-import { Button, Input, Screen } from '../../../ui/components';
-import { getErrorMessage } from '../../../utils/errors';
+import React, { useState } from "react";
 import {
-  isValidCellPhone,
-  isValidDocumentId,
-  isValidEmail,
-  isValidPassword,
-} from '../../../utils/validators';
+  ScrollView,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  StatusBar,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../../../hooks/useAuth";
 
 export default function RegisterScreen({ navigation }) {
+  const [showPassword, setShowPassword] = useState(false);
   const { signUp, loading } = useAuth();
-  const [documentId, setDocumentId] = useState('');
-  const [firstNames, setFirstNames] = useState('');
-  const [lastNames, setLastNames] = useState('');
-  const [address, setAddress] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState(ROLES.CITIZEN);
-  const [errors, setErrors] = useState({});
 
-  const validate = () => {
-    const next = {};
-    if (!isValidDocumentId(documentId)) {
-      next.documentId = 'Ingresa un Nº de identidad válido (6–12 dígitos)';
-    }
-    if (!firstNames.trim()) next.firstNames = 'Los nombres son obligatorios';
-    if (!lastNames.trim()) next.lastNames = 'Los apellidos son obligatorios';
-    if (!address.trim()) next.address = 'La dirección de residencia es obligatoria';
-    if (!isValidCellPhone(phone)) {
-      next.phone = 'Ingresa un celular válido (mín. 10 dígitos)';
-    }
-    if (!isValidEmail(email)) next.email = 'Correo electrónico inválido';
-    if (!isValidPassword(password)) {
-      next.password = 'La contraseña debe tener al menos 6 caracteres';
-    }
-    setErrors(next);
-    return Object.keys(next).length === 0;
+  const [form, setForm] = useState({
+    document: "",
+    names: "",
+    lastNames: "",
+    address: "",
+    phone: "",
+    email: "",
+    password: "",
+  });
+
+  const updateField = (field, value) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const handleRegister = async () => {
-    if (!validate()) return;
+    if (!Object.values(form).every((v) => v)) {
+      Alert.alert("Error", "Completa todos los campos");
+      return;
+    }
     try {
       await signUp({
-        documentId,
-        firstNames,
-        lastNames,
-        address,
-        phone,
-        email,
-        password,
-        role,
+        documentId: form.document,
+        firstNames: form.names,
+        lastNames: form.lastNames,
+        address: form.address,
+        phone: form.phone,
+        email: form.email,
+        password: form.password,
       });
-      Alert.alert(
-        'Cuenta creada',
-        'Revisa tu correo si se requiere confirmación en Supabase.',
-      );
     } catch (error) {
-      Alert.alert('Error al registrarse', getErrorMessage(error));
+      Alert.alert("Error", error.message || "No se pudo registrar");
     }
   };
 
-  return (
-    <Screen scroll>
-      <Text style={styles.title}>Registro</Text>
-      <Text style={styles.subtitle}>
-        Completa tus datos para unirte a la red colaborativa S.E.A
-      </Text>
+  const InputField = ({
+    label,
+    icon,
+    placeholder,
+    value,
+    onChangeText,
+    keyboardType = "default",
+    secureTextEntry = false,
+  }) => (
+    <View style={styles.fieldContainer}>
+      <Text style={styles.label}>{label}</Text>
 
-      <Input
-        label="Nº de identidad"
-        value={documentId}
-        onChangeText={setDocumentId}
-        keyboardType="number-pad"
-        error={errors.documentId}
-        placeholder="Ej: 1234567890"
-      />
-      <Input
-        label="Nombres completos"
-        value={firstNames}
-        onChangeText={setFirstNames}
-        autoCapitalize="words"
-        error={errors.firstNames}
-        placeholder="Ej: María Fernanda"
-      />
-      <Input
-        label="Apellidos completos"
-        value={lastNames}
-        onChangeText={setLastNames}
-        autoCapitalize="words"
-        error={errors.lastNames}
-        placeholder="Ej: López García"
-      />
-      <Input
-        label="Dirección de residencia"
-        value={address}
-        onChangeText={setAddress}
-        error={errors.address}
-        placeholder="Calle, barrio, ciudad"
-      />
-      <Input
-        label="Número de celular"
-        value={phone}
-        onChangeText={setPhone}
-        keyboardType="phone-pad"
-        error={errors.phone}
-        placeholder="+57 300 000 0000"
-      />
-      <Input
-        label="Correo electrónico"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        autoComplete="email"
-        error={errors.email}
-        placeholder="tu@correo.com"
-      />
-      <Input
-        label="Contraseña"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        error={errors.password}
-        placeholder="Mínimo 6 caracteres"
-      />
+      <View style={styles.inputContainer}>
+        <Ionicons name={icon} size={20} color="#64748B" style={styles.icon} />
 
-      <Text style={styles.roleLabel}>Tipo de cuenta</Text>
-      <View style={styles.roleRow}>
-        {REGISTERABLE_ROLES.map((r) => (
-          <Pressable
-            key={r}
-            onPress={() => setRole(r)}
-            style={[styles.roleChip, role === r && styles.roleChipActive]}
-          >
-            <Text
-              style={[styles.roleText, role === r && styles.roleTextActive]}
-            >
-              {ROLE_LABELS[r]}
-            </Text>
-          </Pressable>
-        ))}
+        <TextInput
+          style={styles.input}
+          placeholder={placeholder}
+          placeholderTextColor="#64748B"
+          value={value}
+          onChangeText={onChangeText}
+          keyboardType={keyboardType}
+          secureTextEntry={secureTextEntry}
+        />
+
+        {label === "CONTRASEÑA" && (
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Ionicons
+              name={showPassword ? "eye-off-outline" : "eye-outline"}
+              size={20}
+              color="#64748B"
+            />
+          </TouchableOpacity>
+        )}
       </View>
+    </View>
+  );
 
-      <Button title="Registrarme" onPress={handleRegister} loading={loading} />
-      <Button
-        title="Ya tengo cuenta"
-        variant="ghost"
-        onPress={() => navigation.goBack()}
-        style={styles.backBtn}
-      />
-    </Screen>
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
+
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.logoRow}>
+            <Ionicons name="leaf" size={28} color="#10B981" />
+
+            <Text style={styles.logo}>Reci-path</Text>
+          </View>
+
+          <Text style={styles.title}>Registro</Text>
+
+          <Text style={styles.subtitle}>
+            Únete a nuestra comunidad y comienza a transformar residuos en
+            recursos.
+          </Text>
+        </View>
+
+        {/* Card */}
+        <View style={styles.card}>
+          <InputField
+            label="Nº IDENTIDAD"
+            icon="card-outline"
+            placeholder="Ej: 1005678901"
+            value={form.document}
+            onChangeText={(text) => updateField("document", text)}
+          />
+
+          <InputField
+            label="NOMBRES COMPLETOS"
+            icon="person-outline"
+            placeholder="Tus nombres"
+            value={form.names}
+            onChangeText={(text) => updateField("names", text)}
+          />
+
+          <InputField
+            label="APELLIDOS COMPLETOS"
+            icon="person-outline"
+            placeholder="Tus apellidos"
+            value={form.lastNames}
+            onChangeText={(text) => updateField("lastNames", text)}
+          />
+
+          <InputField
+            label="DIRECCIÓN DE RESIDENCIA"
+            icon="home-outline"
+            placeholder="Ej: Calle 5 #24-10"
+            value={form.address}
+            onChangeText={(text) => updateField("address", text)}
+          />
+
+          <InputField
+            label="Nº DE CELULAR"
+            icon="phone-portrait-outline"
+            placeholder="3101234567"
+            keyboardType="phone-pad"
+            value={form.phone}
+            onChangeText={(text) => updateField("phone", text)}
+          />
+
+          <InputField
+            label="CORREO ELECTRÓNICO"
+            icon="mail-outline"
+            placeholder="ejemplo@correo.com"
+            keyboardType="email-address"
+            value={form.email}
+            onChangeText={(text) => updateField("email", text)}
+          />
+
+          <InputField
+            label="CONTRASEÑA"
+            icon="lock-closed-outline"
+            placeholder="••••••••"
+            secureTextEntry={!showPassword}
+            value={form.password}
+            onChangeText={(text) => updateField("password", text)}
+          />
+
+          <TouchableOpacity
+            style={styles.registerButton}
+            onPress={handleRegister}
+            disabled={loading}
+          >
+            <Text style={styles.registerText}>
+              {loading ? "Registrando..." : "Crear cuenta"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Footer */}
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>
+            ¿Ya tienes una cuenta?
+            <Text style={styles.loginLink} onPress={() => navigation.goBack()}>
+              {" "}
+              Iniciar sesión
+            </Text>
+          </Text>
+
+          <View style={styles.linksRow}>
+            <Text style={styles.link}>Privacidad</Text>
+
+            <Text style={styles.link}>Términos</Text>
+
+            <Text style={styles.link}>Ayuda</Text>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  title: {
-    ...TYPOGRAPHY.h2,
-    color: COLORS.textPrimary,
-    marginTop: SPACING.md,
-  },
-  subtitle: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.textSecondary,
-    marginBottom: SPACING.lg,
-    marginTop: SPACING.xs,
-  },
-  roleLabel: {
-    ...TYPOGRAPHY.label,
-    color: COLORS.textSecondary,
-    marginBottom: SPACING.sm,
-  },
-  roleRow: {
-    flexDirection: 'row',
-    gap: SPACING.sm,
-    marginBottom: SPACING.lg,
-  },
-  roleChip: {
+  container: {
     flex: 1,
-    paddingVertical: SPACING.md,
-    borderRadius: RADIUS.md,
+    backgroundColor: "#020617",
+  },
+
+  scroll: {
+    padding: 24,
+    paddingBottom: 40,
+  },
+
+  header: {
+    alignItems: "center",
+    marginBottom: 24,
+  },
+
+  logoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 18,
+  },
+
+  logo: {
+    color: "#FFFFFF",
+    fontSize: 24,
+    fontWeight: "700",
+    marginLeft: 8,
+  },
+
+  title: {
+    color: "#FFFFFF",
+    fontSize: 34,
+    fontWeight: "800",
+  },
+
+  subtitle: {
+    color: "#94A3B8",
+    textAlign: "center",
+    marginTop: 10,
+    lineHeight: 22,
+    maxWidth: 320,
+  },
+
+  card: {
+    backgroundColor: "#0F172A",
+    borderRadius: 24,
+    padding: 24,
     borderWidth: 1,
-    borderColor: COLORS.cardBorder,
-    backgroundColor: COLORS.cardBg,
-    alignItems: 'center',
+    borderColor: "#1E293B",
   },
-  roleChipActive: {
-    borderColor: COLORS.green,
-    backgroundColor: `${COLORS.green}18`,
+
+  fieldContainer: {
+    marginBottom: 16,
   },
-  roleText: {
-    ...TYPOGRAPHY.label,
-    color: COLORS.textSecondary,
+
+  label: {
+    color: "#94A3B8",
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 1,
+    marginBottom: 8,
   },
-  roleTextActive: {
-    color: COLORS.green,
+
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#020617",
+    borderWidth: 1,
+    borderColor: "#334155",
+    borderRadius: 14,
+    height: 56,
+    paddingHorizontal: 14,
   },
-  backBtn: {
-    marginTop: SPACING.sm,
-    borderWidth: 0,
-    backgroundColor: 'transparent',
+
+  icon: {
+    marginRight: 10,
+  },
+
+  input: {
+    flex: 1,
+    color: "#FFFFFF",
+    fontSize: 15,
+  },
+
+  registerButton: {
+    marginTop: 12,
+    height: 56,
+    borderRadius: 14,
+    backgroundColor: "#10B981",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  registerText: {
+    color: "#FFFFFF",
+    fontWeight: "700",
+    fontSize: 16,
+  },
+
+  footer: {
+    marginTop: 28,
+    alignItems: "center",
+  },
+
+  footerText: {
+    color: "#94A3B8",
+    textAlign: "center",
+  },
+
+  loginLink: {
+    color: "#10B981",
+    fontWeight: "700",
+  },
+
+  linksRow: {
+    flexDirection: "row",
+    marginTop: 18,
+    gap: 20,
+  },
+
+  link: {
+    color: "#64748B",
+    fontSize: 12,
   },
 });

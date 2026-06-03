@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Pressable,
@@ -7,27 +7,30 @@ import {
   Text,
   TextInput,
   View,
-} from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useAuth } from '../../../hooks/useAuth';
-import { useOrders } from '../../../hooks/useOrders';
-import { profileService } from '../../../services/profileService';
-import { ordersService } from '../../../services/ordersService';
-import { ORDER_STATUS } from '../../../constants/orderStatus';
-import COLORS from '../../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
-import { Screen } from '../../../ui/components';
-import { getErrorMessage } from '../../../utils/errors';
-import AdminTopBar from '../../admin/components/AdminTopBar';
-import { getWasteTagLabel, getWasteTagStyle } from '../../admin/utils/collectionHelpers';
+} from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { useAuth } from "../../../hooks/useAuth";
+import { useOrders } from "../../../hooks/useOrders";
+import { profileService } from "../../../services/profileService";
+import { ordersService } from "../../../services/ordersService";
+import { ORDER_STATUS } from "../../../constants/orderStatus";
+import COLORS from "../../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
+import { Screen } from "../../../ui/components";
+import { getErrorMessage } from "../../../utils/errors";
+import AdminTopBar from "../../admin/components/AdminTopBar";
+import {
+  getWasteTagLabel,
+  getWasteTagStyle,
+} from "../../admin/utils/collectionHelpers";
 import {
   formatPickupDateDisplay,
   getCitizenName,
   getCitizenUsername,
   parseCollectorResponse,
-} from '../utils/collectorHelpers';
+} from "../utils/collectorHelpers";
 
 function InfoBlock({ label, value, children }) {
   return (
@@ -44,7 +47,7 @@ export default function CollectorOrderDetailScreen() {
   const { profile } = useAuth();
   const { orders, fetchOrders } = useOrders({ autoFetch: false });
   const [citizen, setCitizen] = useState(null);
-  const [response, setResponse] = useState('');
+  const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
 
   const order = useMemo(
@@ -84,7 +87,7 @@ export default function CollectorOrderDetailScreen() {
 
   const handleSubmitResponse = async () => {
     if (!response.trim()) {
-      Alert.alert('Validación', 'Escribe una respuesta para el ciudadano');
+      Alert.alert("Validación", "Escribe una respuesta para el ciudadano");
       return;
     }
     if (!profile?.id) return;
@@ -98,11 +101,13 @@ export default function CollectorOrderDetailScreen() {
         order.notes,
       );
       await fetchOrders();
-      Alert.alert('Recogida completada', 'Tu respuesta fue enviada al ciudadano.', [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
+      Alert.alert(
+        "Recogida completada",
+        "Tu respuesta fue enviada al ciudadano.",
+        [{ text: "OK", onPress: () => navigation.goBack() }],
+      );
     } catch (error) {
-      Alert.alert('Error', getErrorMessage(error));
+      Alert.alert("Error", getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -116,9 +121,9 @@ export default function CollectorOrderDetailScreen() {
         status: ORDER_STATUS.IN_ROUTE,
       });
       await fetchOrders();
-      Alert.alert('En ruta', 'Recogida marcada como en curso.');
+      Alert.alert("En ruta", "Recogida marcada como en curso.");
     } catch (error) {
-      Alert.alert('Error', getErrorMessage(error));
+      Alert.alert("Error", getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -144,14 +149,14 @@ export default function CollectorOrderDetailScreen() {
             label="FECHA DE RECOGIDA"
             value={formatPickupDateDisplay(pickupDate, order.created_at)}
           />
-          <InfoBlock label="CELULAR" value={citizen?.phone ?? '—'} />
+          <InfoBlock label="CELULAR" value={citizen?.phone ?? "—"} />
         </View>
 
         <InfoBlock label="DIRECCIÓN DE RECOGIDA">
           <View style={styles.addressRow}>
             <Ionicons name="location" size={16} color={COLORS.green} />
             <Text style={styles.blockValue}>
-              {order.address ?? 'Dirección no registrada'}
+              {order.address ?? "Dirección no registrada"}
             </Text>
           </View>
         </InfoBlock>
@@ -167,7 +172,7 @@ export default function CollectorOrderDetailScreen() {
         <InfoBlock label="DESCRIPCIÓN DE LA RECOGIDA DE RESIDUO">
           <Text style={styles.description}>
             {description ||
-              'Sin descripción adicional proporcionada por el ciudadano.'}
+              "Sin descripción adicional proporcionada por el ciudadano."}
           </Text>
         </InfoBlock>
 
@@ -202,12 +207,15 @@ export default function CollectorOrderDetailScreen() {
                 style={styles.submitBtn}
               >
                 <Text style={styles.submitText}>
-                  {loading ? 'Enviando…' : 'ENVIAR RESPUESTA'}
+                  {loading ? "Enviando…" : "ENVIAR RESPUESTA"}
                 </Text>
               </LinearGradient>
             </Pressable>
 
-            <Pressable onPress={() => navigation.goBack()} style={styles.cancelBtn}>
+            <Pressable
+              onPress={() => navigation.goBack()}
+              style={styles.cancelBtn}
+            >
               <Text style={styles.cancelText}>CANCELAR</Text>
             </Pressable>
           </>
@@ -236,7 +244,7 @@ const styles = StyleSheet.create({
     marginTop: SPACING.sm,
   },
   grid: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: SPACING.md,
     marginBottom: SPACING.md,
   },
@@ -251,30 +259,30 @@ const styles = StyleSheet.create({
   blockLabel: {
     ...TYPOGRAPHY.caption,
     color: COLORS.textMuted,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.5,
     marginBottom: SPACING.xs,
   },
   blockValue: {
     ...TYPOGRAPHY.body,
     color: COLORS.textPrimary,
-    fontWeight: '600',
+    fontWeight: "600",
     flex: 1,
   },
   addressRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     gap: SPACING.sm,
   },
   wasteTag: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     paddingHorizontal: SPACING.sm,
     paddingVertical: 4,
     borderRadius: RADIUS.sm,
   },
   wasteTagText: {
     ...TYPOGRAPHY.caption,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   description: {
     ...TYPOGRAPHY.body,
@@ -284,7 +292,7 @@ const styles = StyleSheet.create({
   responseLabel: {
     ...TYPOGRAPHY.caption,
     color: COLORS.textMuted,
-    fontWeight: '700',
+    fontWeight: "700",
     marginTop: SPACING.md,
     marginBottom: SPACING.sm,
   },
@@ -303,7 +311,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.cardBorder,
     borderRadius: RADIUS.md,
     paddingVertical: SPACING.md,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: SPACING.md,
   },
   secondaryBtnText: {
@@ -313,17 +321,17 @@ const styles = StyleSheet.create({
   submitBtn: {
     paddingVertical: SPACING.md + 2,
     borderRadius: RADIUS.md,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: SPACING.md,
   },
   submitText: {
     ...TYPOGRAPHY.label,
     color: COLORS.bg,
-    fontWeight: '800',
+    fontWeight: "800",
     letterSpacing: 0.5,
   },
   cancelBtn: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: SPACING.md,
   },
   cancelText: {
@@ -342,13 +350,13 @@ const styles = StyleSheet.create({
   doneTitle: {
     ...TYPOGRAPHY.caption,
     color: COLORS.green,
-    fontWeight: '800',
+    fontWeight: "800",
     marginBottom: SPACING.sm,
   },
   doneBody: {
     ...TYPOGRAPHY.body,
     color: COLORS.textPrimary,
-    fontStyle: 'italic',
+    fontStyle: "italic",
   },
   missing: {
     padding: SPACING.lg,

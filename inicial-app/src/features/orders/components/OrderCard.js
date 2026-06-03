@@ -1,12 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native';
-import COLORS from '../../../constants/colors';
-import { SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
-import { Card, StatusBadge } from '../../../ui/components';
-import { formatDateTime, formatWeight } from '../../../utils/formatters';
+import { StyleSheet, Text, View } from "react-native";
+import COLORS from "../../../constants/colors";
+import { SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
+import { Card, StatusBadge } from "../../../ui/components";
+import { formatDateTime, formatWeight } from "../../../utils/formatters";
 
 export default function OrderCard({ order, onPress }) {
-  const wasteName =
-    order.waste_types?.name ?? order.waste_type_id ?? 'Residuo';
+  const wasteName = order.waste_types?.name ?? order.waste_type_id ?? "Residuo";
 
   return (
     <Card onPress={onPress}>
@@ -37,9 +36,9 @@ export default function OrderCard({ order, onPress }) {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     gap: SPACING.sm,
     marginBottom: SPACING.sm,
   },
@@ -67,6 +66,6 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.caption,
     color: COLORS.textMuted,
     marginTop: SPACING.sm,
-    fontStyle: 'italic',
+    fontStyle: "italic",
   },
 });

@@ -1,23 +1,23 @@
-import { useCallback, useState } from 'react';
-import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import COLORS from '../../../constants/colors';
-import { SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
-import { EmptyState, LoadingSpinner, Screen } from '../../../ui/components';
-import { useOrders } from '../../../hooks/useOrders';
-import CitizenHeader from '../components/CitizenHeader';
-import SegmentedTabs from '../components/SegmentedTabs';
-import ActiveOrderCard from '../components/ActiveOrderCard';
-import CompletedOrderCard from '../components/CompletedOrderCard';
-import { HISTORY_TABS } from '../constants';
+import { useCallback, useState } from "react";
+import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import COLORS from "../../../constants/colors";
+import { SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
+import { EmptyState, LoadingSpinner, Screen } from "../../../ui/components";
+import { useOrders } from "../../../hooks/useOrders";
+import CitizenHeader from "../components/CitizenHeader";
+import SegmentedTabs from "../components/SegmentedTabs";
+import ActiveOrderCard from "../components/ActiveOrderCard";
+import CompletedOrderCard from "../components/CompletedOrderCard";
+import { HISTORY_TABS } from "../constants";
 import {
   filterActiveOrders,
   filterCompletedOrders,
-} from '../utils/orderHelpers';
+} from "../utils/orderHelpers";
 
 const TABS = [
-  { key: HISTORY_TABS.SENT, label: 'Enviadas' },
-  { key: HISTORY_TABS.COMPLETED, label: 'Completadas' },
+  { key: HISTORY_TABS.SENT, label: "Enviadas" },
+  { key: HISTORY_TABS.COMPLETED, label: "Completadas" },
 ];
 
 export default function CitizenHistoryScreen() {
@@ -37,7 +37,7 @@ export default function CitizenHistoryScreen() {
       : filterCompletedOrders(orders);
 
   const openDetail = (order) => {
-    navigation.navigate('CitizenOrderDetail', { orderId: order.id });
+    navigation.navigate("CitizenOrderDetail", { orderId: order.id });
   };
 
   if (loading && !orders.length) {
@@ -82,20 +82,20 @@ export default function CitizenHistoryScreen() {
               icon="file-tray-outline"
               title={
                 tab === HISTORY_TABS.SENT
-                  ? 'Sin solicitudes activas'
-                  : 'Sin solicitudes completadas'
+                  ? "Sin solicitudes activas"
+                  : "Sin solicitudes completadas"
               }
               description={
                 tab === HISTORY_TABS.SENT
-                  ? 'Tus pedidos pendientes o en curso aparecerán aquí.'
-                  : 'Cuando se recolecten tus residuos los verás en esta pestaña.'
+                  ? "Tus pedidos pendientes o en curso aparecerán aquí."
+                  : "Cuando se recolecten tus residuos los verás en esta pestaña."
               }
               actionLabel={
-                tab === HISTORY_TABS.SENT ? 'Solicitar recogida' : undefined
+                tab === HISTORY_TABS.SENT ? "Solicitar recogida" : undefined
               }
               onAction={
                 tab === HISTORY_TABS.SENT
-                  ? () => navigation.navigate('CitizenRequest')
+                  ? () => navigation.navigate("CitizenRequest")
                   : undefined
               }
             />

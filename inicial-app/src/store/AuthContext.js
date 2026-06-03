@@ -1,6 +1,12 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
-import { authService } from '../services/authService';
-import { getErrorMessage } from '../utils/errors';
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { authService } from "../services/authService";
+import { getErrorMessage } from "../utils/errors";
 
 export const AuthContext = createContext(null);
 
@@ -32,7 +38,7 @@ export function AuthProvider({ children }) {
           await loadProfile(currentSession.user.id);
         }
       } catch (error) {
-        console.warn('[Auth] bootstrap:', getErrorMessage(error));
+        console.warn("[Auth] bootstrap:", getErrorMessage(error));
       } finally {
         if (mounted) setInitializing(false);
       }
@@ -122,7 +128,5 @@ export function AuthProvider({ children }) {
     ],
   );
 
-  return (
-    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

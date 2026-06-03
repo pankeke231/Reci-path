@@ -1,16 +1,16 @@
-import { ORDER_STATUS } from '../../../constants/orderStatus';
+import { ORDER_STATUS } from "../../../constants/orderStatus";
 import {
   filterCompletedOrders,
   filterReceivedOrders,
-} from '../../admin/utils/collectionHelpers';
+} from "../../admin/utils/collectionHelpers";
 import {
   formatHistorySchedule,
   getCollectionAddress,
   getPickupDisplayDate,
   parseOrderNotes,
-} from '../../citizen/utils/orderHelpers';
-import { formatDate } from '../../../utils/formatters';
-import { getProfileDisplayName } from '../../../models/user';
+} from "../../citizen/utils/orderHelpers";
+import { formatDate } from "../../../utils/formatters";
+import { getProfileDisplayName } from "../../../models/user";
 
 export { filterReceivedOrders, filterCompletedOrders };
 
@@ -39,9 +39,11 @@ export function calculateCollectorImpactKg(orders) {
  */
 export function isCollectorActiveToday(orders) {
   return filterReceivedOrders(orders).some((o) =>
-    [ORDER_STATUS.PENDING, ORDER_STATUS.ASSIGNED, ORDER_STATUS.IN_ROUTE].includes(
-      o.status,
-    ),
+    [
+      ORDER_STATUS.PENDING,
+      ORDER_STATUS.ASSIGNED,
+      ORDER_STATUS.IN_ROUTE,
+    ].includes(o.status),
   );
 }
 
@@ -65,8 +67,8 @@ export function getNextStop(orders) {
  * @param {import('../../../models/user').UserProfile|null} citizen
  */
 export function getCitizenUsername(citizen) {
-  if (!citizen?.email) return '—';
-  const local = citizen.email.split('@')[0];
+  if (!citizen?.email) return "—";
+  const local = citizen.email.split("@")[0];
   return `@${local}`;
 }
 
@@ -75,17 +77,17 @@ export function getCitizenUsername(citizen) {
  * @param {import('../../../models/user').UserProfile|null} citizen
  */
 export function getCitizenName(order, citizen) {
-  return getProfileDisplayName(citizen) || 'Ciudadano S.E.A';
+  return getProfileDisplayName(citizen) || "Ciudadano S.E.A";
 }
 
 /**
  * @param {string|null|undefined} notes
  */
 export function parseCollectorResponse(notes) {
-  let raw = notes ?? '';
+  let raw = notes ?? "";
   const responseMatch = raw.match(/\[RESPONSE\]:([^\n]*)/);
-  const response = responseMatch?.[1]?.trim() ?? '';
-  raw = raw.replace(/\[RESPONSE\]:[^\n]*\n?/, '');
+  const response = responseMatch?.[1]?.trim() ?? "";
+  raw = raw.replace(/\[RESPONSE\]:[^\n]*\n?/, "");
   const parsed = parseOrderNotes(raw);
   return {
     response,

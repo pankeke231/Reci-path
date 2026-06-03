@@ -1,15 +1,15 @@
-import { createClient } from '@supabase/supabase-js';
-import { ENV } from '../config/env';
-import { TABLES } from '../constants/tables';
-import { ROLES } from '../constants/roles';
-import { createUserProfile } from '../models/user';
-import { normalizeDocumentId } from '../utils/validators';
-import { supabase } from './supabase/client';
+import { createClient } from "@supabase/supabase-js";
+import { ENV } from "../config/env";
+import { TABLES } from "../constants/tables";
+import { ROLES } from "../constants/roles";
+import { createUserProfile } from "../models/user";
+import { normalizeDocumentId } from "../utils/validators";
+import { supabase } from "./supabase/client";
 
 function getEphemeralClient() {
   return createClient(
-    ENV.supabaseUrl || 'https://placeholder.supabase.co',
-    ENV.supabaseAnonKey || 'placeholder',
+    ENV.supabaseUrl || "https://placeholder.supabase.co",
+    ENV.supabaseAnonKey || "placeholder",
     {
       auth: {
         persistSession: false,
@@ -27,9 +27,9 @@ export const adminService = {
   async listCollectors() {
     const { data, error } = await supabase
       .from(TABLES.PROFILES)
-      .select('*')
-      .eq('role', ROLES.COLLECTOR)
-      .order('created_at', { ascending: false });
+      .select("*")
+      .eq("role", ROLES.COLLECTOR)
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
     return (data ?? []).map(createUserProfile);
@@ -46,6 +46,8 @@ export const adminService = {
     lastNames,
     address,
     phone,
+    vehicleType,
+    licensePlate,
   }) {
     const document_id = normalizeDocumentId(documentId);
     const first_names = firstNames.trim();
@@ -65,6 +67,8 @@ export const adminService = {
           address: address.trim(),
           phone: phone.trim(),
           role: ROLES.COLLECTOR,
+          vehicle_type: vehicleType?.trim() || null,
+          license_plate: licensePlate?.trim() || null,
         },
       },
     });
@@ -83,7 +87,9 @@ export const adminService = {
           address: address.trim(),
           phone: phone.trim(),
           role: ROLES.COLLECTOR,
-          account_status: 'active',
+          vehicle_type: vehicleType?.trim() || null,
+          license_plate: licensePlate?.trim() || null,
+          account_status: "active",
           updated_at: new Date().toISOString(),
         });
 
@@ -99,8 +105,10 @@ export const adminService = {
       full_name,
       address,
       phone,
+      vehicle_type: vehicleType?.trim() || null,
+      license_plate: licensePlate?.trim() || null,
       role: ROLES.COLLECTOR,
-      account_status: 'active',
+      account_status: "active",
     });
   },
 
@@ -115,9 +123,9 @@ export const adminService = {
         ...updates,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', collectorId)
-      .eq('role', ROLES.COLLECTOR)
-      .select('*')
+      .eq("id", collectorId)
+      .eq("role", ROLES.COLLECTOR)
+      .select("*")
       .single();
 
     if (error) throw error;

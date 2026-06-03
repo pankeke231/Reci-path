@@ -1,28 +1,28 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../constants/colors';
+import { StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import COLORS from "../constants/colors";
 
 const pasos = [
   {
-    number: '01',
-    icon: 'document-text-outline',
-    title: 'Reporte de Datos',
+    number: "01",
+    icon: "document-text-outline",
+    title: "Reporte de Datos",
     description:
-      'Los usuarios y sensores reportan el estado de los contenedores y puntos de recolección en tiempo real.',
+      "Los usuarios y sensores reportan el estado de los contenedores y puntos de recolección en tiempo real.",
   },
   {
-    number: '02',
-    icon: 'navigate-outline',
-    title: 'Asignación de Rutas',
+    number: "02",
+    icon: "navigate-outline",
+    title: "Asignación de Rutas",
     description:
-      'El sistema asigna rutas óptimas de recolección basándose en la carga, proximidad y prioridad.',
+      "El sistema asigna rutas óptimas de recolección basándose en la carga, proximidad y prioridad.",
   },
   {
-    number: '03',
-    icon: 'pulse-outline',
-    title: 'Seguimiento en Tiempo Real',
+    number: "03",
+    icon: "pulse-outline",
+    title: "Seguimiento en Tiempo Real",
     description:
-      'Monitorea el recorrido de los recolectores y recibe actualizaciones sobre el estado de la recolección.',
+      "Monitorea el recorrido de los recolectores y recibe actualizaciones sobre el estado de la recolección.",
   },
 ];
 
@@ -72,14 +72,14 @@ const styles = StyleSheet.create({
   sectionLabel: {
     color: COLORS.green,
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 2,
     marginBottom: 8,
   },
   sectionTitle: {
     color: COLORS.white,
     fontSize: 26,
-    fontWeight: '800',
+    fontWeight: "800",
     lineHeight: 34,
     marginBottom: 24,
   },
@@ -87,27 +87,27 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   procesoStepContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 4,
   },
   procesoTimeline: {
     width: 44,
-    alignItems: 'center',
+    alignItems: "center",
   },
   procesoNumberCircle: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: 'rgba(52, 211, 153, 0.12)',
+    backgroundColor: "rgba(52, 211, 153, 0.12)",
     borderWidth: 1.5,
     borderColor: COLORS.green,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   procesoNumber: {
     color: COLORS.green,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   procesoLine: {
     width: 2,
@@ -127,14 +127,14 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.cardBg,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 10,
   },
   procesoTitle: {
     color: COLORS.white,
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
     marginBottom: 6,
   },
   procesoDescription: {

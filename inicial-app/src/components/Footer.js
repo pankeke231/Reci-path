@@ -1,8 +1,15 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Dimensions } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../constants/colors';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import COLORS from "../constants/colors";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 export default function Footer() {
   return (
@@ -13,7 +20,7 @@ export default function Footer() {
       </View>
 
       <Image
-        source={require('../../assets/phone_mockups.png')}
+        source={require("../../assets/phone_mockups.png")}
         style={styles.footerPhoneImage}
         resizeMode="contain"
       />
@@ -50,18 +57,18 @@ const styles = StyleSheet.create({
   footer: {
     paddingHorizontal: 24,
     paddingTop: 48,
-    alignItems: 'center',
+    alignItems: "center",
   },
   footerLogoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 6,
     marginBottom: 24,
   },
   footerLogoText: {
     color: COLORS.white,
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 1,
   },
   footerPhoneImage: {
@@ -74,11 +81,11 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     fontSize: 14,
     lineHeight: 22,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 24,
   },
   footerDivider: {
-    width: '100%',
+    width: "100%",
     height: 1,
     backgroundColor: COLORS.cardBorder,
     marginBottom: 16,
@@ -89,8 +96,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   footerLinks: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   footerLink: {
     color: COLORS.textSecondary,

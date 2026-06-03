@@ -1,12 +1,12 @@
-import { TABLES } from '../constants/tables';
-import { ORDER_STATUS } from '../constants/orderStatus';
-import { createOrder } from '../models/order';
-import { createCrudService } from './baseCrudService';
-import { supabase } from './supabase/client';
+import { TABLES } from "../constants/tables";
+import { ORDER_STATUS } from "../constants/orderStatus";
+import { createOrder } from "../models/order";
+import { createCrudService } from "./baseCrudService";
+import { supabase } from "./supabase/client";
 
 const crud = createCrudService(TABLES.ORDERS);
 
-const ORDER_SELECT = '*, waste_types ( id, name, code, icon, recyclable )';
+const ORDER_SELECT = "*, waste_types ( id, name, code, icon, recyclable )";
 
 export const ordersService = {
   ...crud,
@@ -18,8 +18,8 @@ export const ordersService = {
     const { data, error } = await supabase
       .from(TABLES.ORDERS)
       .select(ORDER_SELECT)
-      .eq('citizen_id', citizenId)
-      .order('created_at', { ascending: false });
+      .eq("citizen_id", citizenId)
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
     return (data ?? []).map(createOrder);
@@ -32,8 +32,8 @@ export const ordersService = {
     const { data, error } = await supabase
       .from(TABLES.ORDERS)
       .select(ORDER_SELECT)
-      .eq('collector_id', collectorId)
-      .order('created_at', { ascending: false });
+      .eq("collector_id", collectorId)
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
     return (data ?? []).map(createOrder);
@@ -48,7 +48,7 @@ export const ordersService = {
       .from(TABLES.ORDERS)
       .select(ORDER_SELECT)
       .or(`collector_id.eq.${collectorId},status.eq.${ORDER_STATUS.PENDING}`)
-      .order('created_at', { ascending: false });
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
 
@@ -84,10 +84,15 @@ export const ordersService = {
    * @param {string} responseText
    * @param {string|null} existingNotes
    */
-  async completeWithResponse(orderId, collectorId, responseText, existingNotes) {
+  async completeWithResponse(
+    orderId,
+    collectorId,
+    responseText,
+    existingNotes,
+  ) {
     const responseLine = `[RESPONSE]:${responseText.trim()}`;
-    let notes = existingNotes ?? '';
-    if (notes.includes('[RESPONSE]:')) {
+    let notes = existingNotes ?? "";
+    if (notes.includes("[RESPONSE]:")) {
       notes = notes.replace(/\[RESPONSE\]:[^\n]*/, responseLine);
     } else {
       notes = notes ? `${responseLine}\n${notes}` : responseLine;
@@ -103,7 +108,7 @@ export const ordersService = {
     const { data, error } = await supabase
       .from(TABLES.ORDERS)
       .select(ORDER_SELECT)
-      .order('created_at', { ascending: false });
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
     return (data ?? []).map(createOrder);
@@ -135,7 +140,7 @@ export const ordersService = {
    * Métricas básicas para dashboard admin.
    */
   async getStats() {
-    const { data, error } = await supabase.from(TABLES.ORDERS).select('status');
+    const { data, error } = await supabase.from(TABLES.ORDERS).select("status");
     if (error) throw error;
 
     const rows = data ?? [];

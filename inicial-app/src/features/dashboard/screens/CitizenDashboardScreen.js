@@ -1,20 +1,20 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../../../hooks/useAuth';
-import { getProfileFirstName } from '../../../models/user';
-import { useOrders } from '../../../hooks/useOrders';
-import { ORDER_STATUS } from '../../../constants/orderStatus';
-import COLORS from '../../../constants/colors';
-import { SPACING, TYPOGRAPHY, RADIUS } from '../../../ui/theme/spacing';
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../../../hooks/useAuth";
+import { getProfileFirstName } from "../../../models/user";
+import { useOrders } from "../../../hooks/useOrders";
+import { ORDER_STATUS } from "../../../constants/orderStatus";
+import COLORS from "../../../constants/colors";
+import { SPACING, TYPOGRAPHY, RADIUS } from "../../../ui/theme/spacing";
 import {
   Button,
   Card,
   Screen,
   SectionHeader,
   StatCard,
-} from '../../../ui/components';
+} from "../../../ui/components";
 
 export default function CitizenDashboardScreen() {
   const navigation = useNavigation();
@@ -38,12 +38,16 @@ export default function CitizenDashboardScreen() {
   return (
     <Screen scroll>
       <SectionHeader
-        title={`Hola, ${getProfileFirstName(profile) || 'Ciudadano'}`}
+        title={`Hola, ${getProfileFirstName(profile) || "Ciudadano"}`}
         subtitle="Gestiona tus solicitudes de recolección"
       />
 
       <View style={styles.statsRow}>
-        <StatCard icon="cube-outline" label="Total pedidos" value={stats.total} />
+        <StatCard
+          icon="cube-outline"
+          label="Total pedidos"
+          value={stats.total}
+        />
         <View style={styles.gap} />
         <StatCard
           icon="time-outline"
@@ -70,13 +74,13 @@ export default function CitizenDashboardScreen() {
         <Button
           title="Crear pedido"
           onPress={() =>
-            navigation.navigate('CitizenOrders', { screen: 'CreateOrder' })
+            navigation.navigate("CitizenOrders", { screen: "CreateOrder" })
           }
           style={styles.actionBtn}
         />
       </Card>
 
-      <Card onPress={() => navigation.navigate('CitizenOrders')}>
+      <Card onPress={() => navigation.navigate("CitizenOrders")}>
         <View style={styles.linkRow}>
           <Ionicons name="list-outline" size={22} color={COLORS.green} />
           <Text style={styles.linkText}>Ver todos mis pedidos</Text>
@@ -89,14 +93,14 @@ export default function CitizenDashboardScreen() {
 
 const styles = StyleSheet.create({
   statsRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: SPACING.md,
   },
   gap: {
     width: SPACING.md,
   },
   actionCard: {
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
     marginTop: SPACING.md,
   },
   actionTitle: {
@@ -111,11 +115,11 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.md,
   },
   actionBtn: {
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
   },
   linkRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: SPACING.sm,
   },
   linkText: {

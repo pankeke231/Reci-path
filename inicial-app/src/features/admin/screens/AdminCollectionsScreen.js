@@ -1,28 +1,23 @@
-import { useCallback, useState } from 'react';
-import {
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  View,
-} from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import COLORS from '../../../constants/colors';
-import { SPACING } from '../../../ui/theme/spacing';
-import { EmptyState, LoadingSpinner, Screen } from '../../../ui/components';
-import { useOrders } from '../../../hooks/useOrders';
-import AdminHeader from '../components/AdminHeader';
-import SegmentedTabs from '../../citizen/components/SegmentedTabs';
-import ReceivedCollectionCard from '../components/ReceivedCollectionCard';
-import CompletedCollectionCard from '../components/CompletedCollectionCard';
-import { COLLECTION_TABS } from '../constants';
+import { useCallback, useState } from "react";
+import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import COLORS from "../../../constants/colors";
+import { SPACING } from "../../../ui/theme/spacing";
+import { EmptyState, LoadingSpinner, Screen } from "../../../ui/components";
+import { useOrders } from "../../../hooks/useOrders";
+import AdminHeader from "../components/AdminHeader";
+import SegmentedTabs from "../../citizen/components/SegmentedTabs";
+import ReceivedCollectionCard from "../components/ReceivedCollectionCard";
+import CompletedCollectionCard from "../components/CompletedCollectionCard";
+import { COLLECTION_TABS } from "../constants";
 import {
   filterCompletedOrders,
   filterReceivedOrders,
-} from '../utils/collectionHelpers';
+} from "../utils/collectionHelpers";
 
 const TABS = [
-  { key: COLLECTION_TABS.RECEIVED, label: 'RECIBIDAS' },
-  { key: COLLECTION_TABS.COMPLETED, label: 'COMPLETADAS' },
+  { key: COLLECTION_TABS.RECEIVED, label: "RECIBIDAS" },
+  { key: COLLECTION_TABS.COMPLETED, label: "COMPLETADAS" },
 ];
 
 export default function AdminCollectionsScreen() {
@@ -51,7 +46,7 @@ export default function AdminCollectionsScreen() {
         title="Historial de recogidas"
         showBack
         onBack={() => navigation.goBack()}
-        onProfile={() => navigation.navigate('AdminProfile')}
+        onProfile={() => navigation.navigate("AdminProfile")}
       />
 
       <View style={styles.content}>
@@ -72,12 +67,16 @@ export default function AdminCollectionsScreen() {
             tab === COLLECTION_TABS.RECEIVED ? (
               <ReceivedCollectionCard
                 order={item}
-                onPress={() => navigation.navigate('AdminOrderDetail', { orderId: item.id })}
+                onPress={() =>
+                  navigation.navigate("AdminOrderDetail", { orderId: item.id })
+                }
               />
             ) : (
               <CompletedCollectionCard
                 order={item}
-                onPress={() => navigation.navigate('AdminOrderDetail', { orderId: item.id })}
+                onPress={() =>
+                  navigation.navigate("AdminOrderDetail", { orderId: item.id })
+                }
               />
             )
           }
@@ -86,8 +85,8 @@ export default function AdminCollectionsScreen() {
               icon="reload-outline"
               title={
                 tab === COLLECTION_TABS.RECEIVED
-                  ? 'Sin recogidas recibidas'
-                  : 'Sin recogidas completadas'
+                  ? "Sin recogidas recibidas"
+                  : "Sin recogidas completadas"
               }
               description="Las solicitudes de ciudadanos aparecerán aquí."
             />

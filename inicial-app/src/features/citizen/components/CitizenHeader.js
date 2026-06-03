@@ -1,7 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../../../constants/colors';
-import { SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import COLORS from "../../../constants/colors";
+import { SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
 
 export default function CitizenHeader({
   title,
@@ -56,8 +56,8 @@ const styles = StyleSheet.create({
     paddingBottom: SPACING.md,
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: SPACING.sm,
   },
   titles: {
@@ -72,11 +72,11 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.caption,
     color: COLORS.green,
     marginTop: 2,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: SPACING.sm,
   },
   iconBtn: {
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.cardBg,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatar: {
     width: 40,
@@ -96,8 +96,8 @@ const styles = StyleSheet.create({
     backgroundColor: `${COLORS.green}22`,
     borderWidth: 1,
     borderColor: COLORS.green,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   iconSpacer: {
     width: 40,

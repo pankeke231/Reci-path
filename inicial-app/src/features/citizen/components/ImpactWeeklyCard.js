@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
+import { StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import COLORS from "../../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
 
 export default function ImpactWeeklyCard({ isActive, co2Kg }) {
   return (
@@ -10,7 +10,7 @@ export default function ImpactWeeklyCard({ isActive, co2Kg }) {
         <Text style={styles.title}>Impacto Semanal</Text>
         <View style={[styles.badge, isActive && styles.badgeActive]}>
           <Text style={[styles.badgeText, isActive && styles.badgeTextActive]}>
-            {isActive ? 'Activo' : 'Inactivo'}
+            {isActive ? "Activo" : "Inactivo"}
           </Text>
         </View>
       </View>
@@ -32,9 +32,9 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.lg,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: SPACING.sm,
   },
   title: {
@@ -53,14 +53,14 @@ const styles = StyleSheet.create({
   badgeText: {
     ...TYPOGRAPHY.caption,
     color: COLORS.textMuted,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   badgeTextActive: {
     color: COLORS.green,
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: SPACING.sm,
   },
   co2: {

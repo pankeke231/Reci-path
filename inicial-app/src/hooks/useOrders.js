@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
-import { ordersService } from '../services/ordersService';
-import { getErrorMessage } from '../utils/errors';
-import { useAuth } from './useAuth';
-import { ROLES } from '../constants/roles';
+import { useCallback, useEffect, useState } from "react";
+import { ordersService } from "../services/ordersService";
+import { getErrorMessage } from "../utils/errors";
+import { useAuth } from "./useAuth";
+import { ROLES } from "../constants/roles";
 
 export function useOrders({ autoFetch = true } = {}) {
   const { profile } = useAuth();
@@ -43,7 +43,7 @@ export function useOrders({ autoFetch = true } = {}) {
   const createOrder = useCallback(
     async (payload) => {
       if (!profile?.id) {
-        throw new Error('Debes iniciar sesión para crear un pedido');
+        throw new Error("Debes iniciar sesión para crear un pedido");
       }
       const created = await ordersService.createOrder({
         ...payload,

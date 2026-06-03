@@ -13,22 +13,22 @@ export function isValidPhone(phone) {
 
 /** Celular obligatorio en registro (mín. 10 dígitos) */
 export function isValidCellPhone(phone) {
-  const digits = String(phone).replace(/\D/g, '');
+  const digits = String(phone).replace(/\D/g, "");
   return digits.length >= 10 && digits.length <= 15;
 }
 
 /** Cédula / documento de identidad (Colombia: 6–12 dígitos) */
 export function isValidDocumentId(documentId) {
-  const cleaned = String(documentId).replace(/[.\s-]/g, '');
+  const cleaned = String(documentId).replace(/[.\s-]/g, "");
   return /^\d{6,12}$/.test(cleaned);
 }
 
 export function normalizeDocumentId(documentId) {
-  return String(documentId).replace(/[.\s-]/g, '');
+  return String(documentId).replace(/[.\s-]/g, "");
 }
 
 export function parsePositiveNumber(value) {
-  const num = parseFloat(String(value).replace(',', '.'));
+  const num = parseFloat(String(value).replace(",", "."));
   return Number.isFinite(num) && num > 0 ? num : null;
 }
 

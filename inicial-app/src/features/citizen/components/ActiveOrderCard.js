@@ -1,18 +1,18 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
-import { formatWeight } from '../../../utils/formatters';
-import { CITIZEN_BADGE } from '../constants';
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import COLORS from "../../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
+import { formatWeight } from "../../../utils/formatters";
+import { CITIZEN_BADGE } from "../constants";
 import {
   formatHistorySchedule,
   getPickupDisplayDate,
   getWasteLabel,
-} from '../utils/orderHelpers';
+} from "../utils/orderHelpers";
 
 export default function ActiveOrderCard({ order, onPress }) {
   const badge = CITIZEN_BADGE[order.status] ?? CITIZEN_BADGE.pending;
-  const isActive = badge.tone === 'active';
+  const isActive = badge.tone === "active";
 
   return (
     <Pressable onPress={onPress} style={styles.card}>
@@ -41,7 +41,7 @@ export default function ActiveOrderCard({ order, onPress }) {
       <View style={styles.metaRow}>
         <Ionicons name="location-outline" size={14} color={COLORS.textMuted} />
         <Text style={styles.meta} numberOfLines={1}>
-          {order.address ?? 'Ubicación registrada en Cali'}
+          {order.address ?? "Ubicación registrada en Cali"}
         </Text>
       </View>
       <View style={styles.metaRow}>
@@ -64,8 +64,8 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.md,
   },
   top: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     gap: SPACING.sm,
     marginBottom: SPACING.md,
   },
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.label,
     color: COLORS.textPrimary,
     fontSize: 15,
-    fontWeight: '800',
+    fontWeight: "800",
     letterSpacing: 0.5,
   },
   weight: {
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   badge: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     paddingHorizontal: SPACING.sm,
     paddingVertical: 4,
     borderRadius: RADIUS.sm,
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     ...TYPOGRAPHY.caption,
-    fontWeight: '800',
+    fontWeight: "800",
     fontSize: 11,
     letterSpacing: 0.5,
   },
@@ -111,8 +111,8 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
   },
   metaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 6,
     marginTop: 4,
   },

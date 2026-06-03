@@ -1,5 +1,5 @@
-import { supabase } from './supabase/client';
-import { TABLES } from '../constants/tables';
+import { supabase } from "./supabase/client";
+import { TABLES } from "../constants/tables";
 
 /**
  * Suscripción a cambios de pedidos (preparado para WebSockets/Realtime).
@@ -9,12 +9,12 @@ import { TABLES } from '../constants/tables';
  */
 export function subscribeToOrders(filterColumn, filterValue, callback) {
   const channel = supabase
-    .channel('orders-realtime')
+    .channel("orders-realtime")
     .on(
-      'postgres_changes',
+      "postgres_changes",
       {
-        event: '*',
-        schema: 'public',
+        event: "*",
+        schema: "public",
         table: TABLES.ORDERS,
         ...(filterColumn && filterValue
           ? { filter: `${filterColumn}=eq.${filterValue}` }

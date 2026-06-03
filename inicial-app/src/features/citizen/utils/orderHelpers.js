@@ -1,14 +1,14 @@
-import { ORDER_STATUS } from '../../../constants/orderStatus';
-import { ACTIVE_STATUSES, COMPLETED_STATUSES } from '../constants';
+import { ORDER_STATUS } from "../../../constants/orderStatus";
+import { ACTIVE_STATUSES, COMPLETED_STATUSES } from "../constants";
 
-const PICKUP_PREFIX = '[PICKUP]:';
+const PICKUP_PREFIX = "[PICKUP]:";
 
 /**
  * @param {string} pickupDate ISO o dd/mm/yyyy
  * @param {string} description
  */
 export function encodeOrderNotes(pickupDate, description) {
-  const desc = description?.trim() ?? '';
+  const desc = description?.trim() ?? "";
   if (!pickupDate) return desc || null;
   return `${PICKUP_PREFIX}${pickupDate}\n${desc}`;
 }
@@ -17,12 +17,12 @@ export function encodeOrderNotes(pickupDate, description) {
  * @param {string|null|undefined} notes
  */
 export function parseOrderNotes(notes) {
-  if (!notes) return { pickupDate: null, description: '' };
+  if (!notes) return { pickupDate: null, description: "" };
   if (notes.startsWith(PICKUP_PREFIX)) {
     const rest = notes.slice(PICKUP_PREFIX.length);
-    const lineBreak = rest.indexOf('\n');
+    const lineBreak = rest.indexOf("\n");
     if (lineBreak === -1) {
-      return { pickupDate: rest.trim(), description: '' };
+      return { pickupDate: rest.trim(), description: "" };
     }
     return {
       pickupDate: rest.slice(0, lineBreak).trim(),
@@ -73,8 +73,8 @@ export function estimatePoints(quantityKg) {
  * @param {string|Date} date
  */
 export function formatHistorySchedule(date) {
-  if (!date) return '—';
-  const d = typeof date === 'string' ? new Date(date) : date;
+  if (!date) return "—";
+  const d = typeof date === "string" ? new Date(date) : date;
   if (Number.isNaN(d.getTime())) return String(date);
 
   const now = new Date();
@@ -90,19 +90,19 @@ export function formatHistorySchedule(date) {
     d.getMonth() === tomorrow.getMonth() &&
     d.getFullYear() === tomorrow.getFullYear();
 
-  const time = d.toLocaleTimeString('es-CO', {
-    hour: '2-digit',
-    minute: '2-digit',
+  const time = d.toLocaleTimeString("es-CO", {
+    hour: "2-digit",
+    minute: "2-digit",
     hour12: false,
   });
 
   if (isToday) return `Hoy, ${time}hs`;
   if (isTomorrow) return `Mañana, ${time}hs`;
-  return d.toLocaleString('es-CO', {
-    day: '2-digit',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
+  return d.toLocaleString("es-CO", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
     hour12: false,
   });
 }
@@ -111,12 +111,12 @@ export function formatHistorySchedule(date) {
  * @param {string|Date} date
  */
 export function formatCompletedHeader(date) {
-  if (!date) return 'COMPLETADA';
-  const d = typeof date === 'string' ? new Date(date) : date;
+  if (!date) return "COMPLETADA";
+  const d = typeof date === "string" ? new Date(date) : date;
   const day = d.getDate();
   const month = d
-    .toLocaleString('es-CO', { month: 'short' })
-    .replace('.', '')
+    .toLocaleString("es-CO", { month: "short" })
+    .replace(".", "")
     .toUpperCase();
   return `COMPLETADA - ${day} ${month}`;
 }
@@ -128,7 +128,7 @@ export function getWasteLabel(order) {
   return (
     order.waste_types?.name?.toUpperCase() ??
     order.waste_type_id?.toUpperCase() ??
-    'RESIDUO'
+    "RESIDUO"
   );
 }
 
@@ -139,7 +139,7 @@ export function getPickupDisplayDate(order) {
   const { pickupDate } = parseOrderNotes(order.notes);
   if (pickupDate) {
     if (/^\d{4}-\d{2}-\d{2}$/.test(pickupDate)) {
-      const [y, m, d] = pickupDate.split('-').map(Number);
+      const [y, m, d] = pickupDate.split("-").map(Number);
       return new Date(y, m - 1, d);
     }
     return pickupDate;
@@ -152,7 +152,9 @@ export function getPickupDisplayDate(order) {
  */
 export function getRecyclerLabel(order) {
   if (order.status !== ORDER_STATUS.COLLECTED) {
-    return order.collector_id ? 'Recolector asignado' : 'Pendiente de asignación';
+    return order.collector_id
+      ? "Recolector asignado"
+      : "Pendiente de asignación";
   }
-  return 'Recolector S.E.A';
+  return "Recolector S.E.A";
 }

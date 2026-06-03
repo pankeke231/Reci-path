@@ -1,5 +1,5 @@
-import { DarkTheme } from '@react-navigation/native';
-import COLORS from '../constants/colors';
+import { DarkTheme } from "@react-navigation/native";
+import COLORS from "../constants/colors";
 
 /** Extiende DarkTheme para conservar `fonts` requerido por React Navigation 7 */
 export const navigationTheme = {
@@ -18,7 +18,7 @@ export const navigationTheme = {
 export const screenOptions = {
   headerStyle: { backgroundColor: COLORS.bg },
   headerTintColor: COLORS.textPrimary,
-  headerTitleStyle: { fontWeight: '700' },
+  headerTitleStyle: { fontWeight: "700" },
   contentStyle: { backgroundColor: COLORS.bg },
 };
 

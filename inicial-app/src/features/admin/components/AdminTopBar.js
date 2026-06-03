@@ -1,7 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../../../constants/colors';
-import { SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import COLORS from "../../../constants/colors";
+import { SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
 
 export default function AdminTopBar({ onBack, rightIcon, onRightPress }) {
   return (
@@ -15,7 +15,7 @@ export default function AdminTopBar({ onBack, rightIcon, onRightPress }) {
       </View>
       <Pressable onPress={onRightPress} style={styles.sideBtn}>
         <Ionicons
-          name={rightIcon ?? 'ellipsis-horizontal'}
+          name={rightIcon ?? "ellipsis-horizontal"}
           size={22}
           color={COLORS.textPrimary}
         />
@@ -26,9 +26,9 @@ export default function AdminTopBar({ onBack, rightIcon, onRightPress }) {
 
 const styles = StyleSheet.create({
   wrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: SPACING.lg,
     paddingTop: SPACING.sm,
     paddingBottom: SPACING.md,
@@ -36,12 +36,12 @@ const styles = StyleSheet.create({
   sideBtn: {
     width: 40,
     height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   brand: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 6,
   },
   brandText: {

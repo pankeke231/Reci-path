@@ -1,27 +1,27 @@
-import { useEffect, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useOrders } from '../../../hooks/useOrders';
-import { wasteService } from '../../../services/wasteService';
-import COLORS from '../../../constants/colors';
-import { SPACING, TYPOGRAPHY, RADIUS } from '../../../ui/theme/spacing';
-import { Button, Input, Screen, SectionHeader } from '../../../ui/components';
-import { getErrorMessage } from '../../../utils/errors';
+import { useEffect, useState } from "react";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useOrders } from "../../../hooks/useOrders";
+import { wasteService } from "../../../services/wasteService";
+import COLORS from "../../../constants/colors";
+import { SPACING, TYPOGRAPHY, RADIUS } from "../../../ui/theme/spacing";
+import { Button, Input, Screen, SectionHeader } from "../../../ui/components";
+import { getErrorMessage } from "../../../utils/errors";
 import {
   parseCoordinates,
   parsePositiveNumber,
-} from '../../../utils/validators';
+} from "../../../utils/validators";
 
 export default function CreateOrderScreen() {
   const navigation = useNavigation();
   const { createOrder } = useOrders({ autoFetch: false });
   const [wasteTypes, setWasteTypes] = useState([]);
-  const [wasteTypeId, setWasteTypeId] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [address, setAddress] = useState('');
-  const [latitude, setLatitude] = useState('3.4516');
-  const [longitude, setLongitude] = useState('-76.5320');
-  const [notes, setNotes] = useState('');
+  const [wasteTypeId, setWasteTypeId] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [address, setAddress] = useState("");
+  const [latitude, setLatitude] = useState("3.4516");
+  const [longitude, setLongitude] = useState("-76.5320");
+  const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -35,15 +35,15 @@ export default function CreateOrderScreen() {
     const qty = parsePositiveNumber(quantity);
     const coords = parseCoordinates(latitude, longitude);
     if (!wasteTypeId) {
-      Alert.alert('Validación', 'Selecciona un tipo de residuo');
+      Alert.alert("Validación", "Selecciona un tipo de residuo");
       return;
     }
     if (!qty) {
-      Alert.alert('Validación', 'Ingresa una cantidad válida en kg');
+      Alert.alert("Validación", "Ingresa una cantidad válida en kg");
       return;
     }
     if (!coords) {
-      Alert.alert('Validación', 'Coordenadas inválidas');
+      Alert.alert("Validación", "Coordenadas inválidas");
       return;
     }
 
@@ -57,11 +57,13 @@ export default function CreateOrderScreen() {
         longitude: coords.longitude,
         notes: notes.trim() || null,
       });
-      Alert.alert('Pedido creado', 'Tu solicitud fue registrada correctamente.', [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
+      Alert.alert(
+        "Pedido creado",
+        "Tu solicitud fue registrada correctamente.",
+        [{ text: "OK", onPress: () => navigation.goBack() }],
+      );
     } catch (error) {
-      Alert.alert('Error', getErrorMessage(error));
+      Alert.alert("Error", getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -80,10 +82,7 @@ export default function CreateOrderScreen() {
           <Pressable
             key={type.id}
             onPress={() => setWasteTypeId(type.id)}
-            style={[
-              styles.chip,
-              wasteTypeId === type.id && styles.chipActive,
-            ]}
+            style={[styles.chip, wasteTypeId === type.id && styles.chipActive]}
           >
             <Text
               style={[
@@ -132,7 +131,11 @@ export default function CreateOrderScreen() {
         placeholder="Horario preferido, acceso, etc."
       />
 
-      <Button title="Enviar solicitud" onPress={handleSubmit} loading={loading} />
+      <Button
+        title="Enviar solicitud"
+        onPress={handleSubmit}
+        loading={loading}
+      />
     </Screen>
   );
 }
@@ -144,8 +147,8 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.sm,
   },
   chips: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: SPACING.sm,
     marginBottom: SPACING.lg,
   },
@@ -167,10 +170,10 @@ const styles = StyleSheet.create({
   },
   chipTextActive: {
     color: COLORS.green,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   notes: {
     minHeight: 80,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
 });

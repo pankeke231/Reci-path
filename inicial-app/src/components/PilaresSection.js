@@ -1,25 +1,25 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../constants/colors';
+import { StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import COLORS from "../constants/colors";
 
 const pilares = [
   {
-    icon: 'git-network-outline',
-    title: 'Rutas Inteligentes',
+    icon: "git-network-outline",
+    title: "Rutas Inteligentes",
     description:
-      'Optimización automática de las rutas de recolección basada en datos en tiempo real, reduciendo costos y emisiones.',
+      "Optimización automática de las rutas de recolección basada en datos en tiempo real, reduciendo costos y emisiones.",
   },
   {
-    icon: 'people-outline',
-    title: 'Colaboración Social',
+    icon: "people-outline",
+    title: "Colaboración Social",
     description:
-      'Conectamos a comunidades, recicladores y empresas en un ecosistema colaborativo para maximizar el impacto del reciclaje.',
+      "Conectamos a comunidades, recicladores y empresas en un ecosistema colaborativo para maximizar el impacto del reciclaje.",
   },
   {
-    icon: 'map-outline',
-    title: 'Mapa Interactivo',
+    icon: "map-outline",
+    title: "Mapa Interactivo",
     description:
-      'Visualiza puntos de recolección, rutas activas y centros de reciclaje en un mapa dinámico e intuitivo.',
+      "Visualiza puntos de recolección, rutas activas y centros de reciclaje en un mapa dinámico e intuitivo.",
   },
 ];
 
@@ -39,9 +39,7 @@ export default function PilaresSection() {
   return (
     <View style={styles.section}>
       <Text style={styles.sectionLabel}>NUESTRA PROPUESTA</Text>
-      <Text style={styles.sectionTitle}>
-        Pilares de Nuestra{'\n'}Solución
-      </Text>
+      <Text style={styles.sectionTitle}>Pilares de Nuestra{"\n"}Solución</Text>
       {pilares.map((pilar, index) => (
         <PilarCard key={index} {...pilar} />
       ))}
@@ -57,14 +55,14 @@ const styles = StyleSheet.create({
   sectionLabel: {
     color: COLORS.green,
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 2,
     marginBottom: 8,
   },
   sectionTitle: {
     color: COLORS.white,
     fontSize: 26,
-    fontWeight: '800',
+    fontWeight: "800",
     lineHeight: 34,
     marginBottom: 24,
   },
@@ -80,15 +78,15 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 14,
-    backgroundColor: 'rgba(52, 211, 153, 0.1)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "rgba(52, 211, 153, 0.1)",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 14,
   },
   pilarTitle: {
     color: COLORS.white,
     fontSize: 17,
-    fontWeight: '700',
+    fontWeight: "700",
     marginBottom: 8,
   },
   pilarDescription: {

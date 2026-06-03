@@ -1,6 +1,6 @@
-import { Pressable, StyleSheet, View } from 'react-native';
-import COLORS from '../../constants/colors';
-import { RADIUS, SPACING } from '../theme/spacing';
+import { Pressable, StyleSheet, View } from "react-native";
+import COLORS from "../../constants/colors";
+import { RADIUS, SPACING } from "../theme/spacing";
 
 export default function Card({ children, onPress, style }) {
   const Wrapper = onPress ? Pressable : View;

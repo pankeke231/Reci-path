@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
-import COLORS from '../../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
+import { StyleSheet, Text, View } from "react-native";
+import COLORS from "../../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
 
 export default function CollectorStatsCard({ isActive, impactKg }) {
   return (
@@ -8,7 +8,7 @@ export default function CollectorStatsCard({ isActive, impactKg }) {
       <View style={styles.col}>
         <Text style={styles.label}>Estado Hoy</Text>
         <Text style={[styles.value, isActive && styles.valueActive]}>
-          {isActive ? 'Activo' : 'Inactivo'}
+          {isActive ? "Activo" : "Inactivo"}
         </Text>
       </View>
       <View style={styles.divider} />
@@ -22,7 +22,7 @@ export default function CollectorStatsCard({ isActive, impactKg }) {
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: COLORS.cardBg,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   },
   col: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
   },
   divider: {
     width: 1,

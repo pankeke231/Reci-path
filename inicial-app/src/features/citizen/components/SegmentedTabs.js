@@ -1,6 +1,6 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import COLORS from '../../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import COLORS from "../../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
 
 export default function SegmentedTabs({ tabs, activeKey, onChange }) {
   return (
@@ -25,7 +25,7 @@ export default function SegmentedTabs({ tabs, activeKey, onChange }) {
 
 const styles = StyleSheet.create({
   wrap: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: COLORS.cardBg,
     borderRadius: RADIUS.lg,
     borderWidth: 1,
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: SPACING.sm + 2,
     borderRadius: RADIUS.md,
-    alignItems: 'center',
+    alignItems: "center",
   },
   tabActive: {
     backgroundColor: COLORS.green,
@@ -48,6 +48,6 @@ const styles = StyleSheet.create({
   },
   tabTextActive: {
     color: COLORS.bg,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 });

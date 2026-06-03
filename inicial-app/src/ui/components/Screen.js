@@ -1,7 +1,7 @@
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import COLORS from '../../constants/colors';
-import { SPACING } from '../theme/spacing';
+import { ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import COLORS from "../../constants/colors";
+import { SPACING } from "../theme/spacing";
 
 export default function Screen({
   children,
@@ -19,12 +19,12 @@ export default function Screen({
           contentStyle,
         ],
         showsVerticalScrollIndicator: false,
-        keyboardShouldPersistTaps: 'handled',
+        keyboardShouldPersistTaps: "handled",
       }
     : { style: [styles.flex, padded && styles.padded, contentStyle] };
 
   return (
-    <SafeAreaView style={[styles.safe, style]} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={[styles.safe, style]} edges={["top", "left", "right"]}>
       <Container style={scroll ? styles.flex : undefined} {...containerProps}>
         {children}
       </Container>

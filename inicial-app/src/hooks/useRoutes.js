@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
-import { routesService } from '../services/routesService';
-import { getErrorMessage } from '../utils/errors';
-import { useAuth } from './useAuth';
-import { ROLES } from '../constants/roles';
+import { useCallback, useEffect, useState } from "react";
+import { routesService } from "../services/routesService";
+import { getErrorMessage } from "../utils/errors";
+import { useAuth } from "./useAuth";
+import { ROLES } from "../constants/roles";
 
 export function useRoutes({ autoFetch = true } = {}) {
   const { profile } = useAuth();

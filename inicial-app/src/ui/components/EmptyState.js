@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../../constants/colors';
-import { SPACING, TYPOGRAPHY } from '../theme/spacing';
-import Button from './Button';
+import { StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import COLORS from "../../constants/colors";
+import { SPACING, TYPOGRAPHY } from "../theme/spacing";
+import Button from "./Button";
 
 export default function EmptyState({
-  icon = 'leaf-outline',
+  icon = "leaf-outline",
   title,
   description,
   actionLabel,
@@ -15,7 +15,9 @@ export default function EmptyState({
     <View style={styles.container}>
       <Ionicons name={icon} size={48} color={COLORS.textMuted} />
       <Text style={styles.title}>{title}</Text>
-      {description ? <Text style={styles.description}>{description}</Text> : null}
+      {description ? (
+        <Text style={styles.description}>{description}</Text>
+      ) : null}
       {actionLabel && onAction ? (
         <Button title={actionLabel} onPress={onAction} style={styles.button} />
       ) : null}
@@ -25,7 +27,7 @@ export default function EmptyState({
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: SPACING.xxl,
     paddingHorizontal: SPACING.lg,
   },
@@ -33,16 +35,16 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.h3,
     color: COLORS.textPrimary,
     marginTop: SPACING.md,
-    textAlign: 'center',
+    textAlign: "center",
   },
   description: {
     ...TYPOGRAPHY.body,
     color: COLORS.textSecondary,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: SPACING.sm,
   },
   button: {
     marginTop: SPACING.lg,
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
   },
 });

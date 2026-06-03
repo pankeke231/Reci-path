@@ -1,4 +1,4 @@
-import { ORDER_STATUS } from '../constants/orderStatus';
+import { ORDER_STATUS } from "../constants/orderStatus";
 
 /**
  * @typedef {Object} CollectionOrder
@@ -9,7 +9,7 @@ import { ORDER_STATUS } from '../constants/orderStatus';
  * @property {string} waste_type_id
  * @property {string} status
  * @property {number} quantity_kg
- * @property {string|null} notes
+ * @property {Object|null} detalles
  * @property {number} latitude
  * @property {number} longitude
  * @property {string|null} address
@@ -25,14 +25,14 @@ import { ORDER_STATUS } from '../constants/orderStatus';
  */
 export function createOrder(data = {}) {
   return {
-    id: data.id ?? '',
-    citizen_id: data.citizen_id ?? '',
+    id: data.id ?? "",
+    citizen_id: data.citizen_id ?? "",
     collector_id: data.collector_id ?? null,
     route_id: data.route_id ?? null,
-    waste_type_id: data.waste_type_id ?? '',
+    waste_type_id: data.waste_type_id ?? "",
     status: data.status ?? ORDER_STATUS.PENDING,
     quantity_kg: data.quantity_kg ?? 0,
-    notes: data.notes ?? null,
+    detalles: data.detalles ?? null,
     latitude: data.latitude ?? 0,
     longitude: data.longitude ?? 0,
     address: data.address ?? null,

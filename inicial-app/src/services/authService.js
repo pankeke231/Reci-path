@@ -1,8 +1,8 @@
-import { TABLES } from '../constants/tables';
-import { ROLES } from '../constants/roles';
-import { createUserProfile } from '../models/user';
-import { normalizeDocumentId } from '../utils/validators';
-import { supabase } from './supabase/client';
+import { TABLES } from "../constants/tables";
+import { ROLES } from "../constants/roles";
+import { createUserProfile } from "../models/user";
+import { normalizeDocumentId } from "../utils/validators";
+import { supabase } from "./supabase/client";
 
 /**
  * @typedef {Object} SignUpInput
@@ -30,8 +30,8 @@ export const authService = {
   async fetchProfile(userId) {
     const { data, error } = await supabase
       .from(TABLES.PROFILES)
-      .select('*')
-      .eq('id', userId)
+      .select("*")
+      .eq("id", userId)
       .maybeSingle();
 
     if (error) throw error;
@@ -117,9 +117,9 @@ export const authService = {
           ...profile,
           updated_at: new Date().toISOString(),
         },
-        { onConflict: 'id' },
+        { onConflict: "id" },
       )
-      .select('*')
+      .select("*")
       .single();
 
     if (error) throw error;

@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../theme/spacing';
-import Card from './Card';
+import { StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import COLORS from "../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../theme/spacing";
+import Card from "./Card";
 
 export default function StatCard({ icon, label, value, color = COLORS.green }) {
   return (
@@ -19,15 +19,15 @@ export default function StatCard({ icon, label, value, color = COLORS.green }) {
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    minWidth: '45%',
+    minWidth: "45%",
     marginBottom: 0,
   },
   iconWrap: {
     width: 40,
     height: 40,
     borderRadius: RADIUS.md,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: SPACING.sm,
   },
   value: {

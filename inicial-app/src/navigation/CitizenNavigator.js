@@ -1,10 +1,10 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import COLORS from '../constants/colors';
-import CitizenHomeScreen from '../features/citizen/screens/CitizenHomeScreen';
-import CitizenHistoryScreen from '../features/citizen/screens/CitizenHistoryScreen';
-import CitizenRequestScreen from '../features/citizen/screens/CitizenRequestScreen';
-import CitizenOrderDetailScreen from '../features/citizen/screens/CitizenOrderDetailScreen';
-import ProfileScreen from '../features/profile/screens/ProfileScreen';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import COLORS from "../constants/colors";
+import CitizenHomeScreen from "../features/citizen/screens/CitizenHomeScreen";
+import CitizenHistoryScreen from "../features/citizen/screens/CitizenHistoryScreen";
+import CitizenRequestScreen from "../features/citizen/screens/CitizenRequestScreen";
+import CitizenOrderDetailScreen from "../features/citizen/screens/CitizenOrderDetailScreen";
+import ProfileScreen from "../features/profile/screens/ProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,7 +14,7 @@ export default function CitizenNavigator() {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: COLORS.bg },
-        animation: 'slide_from_right',
+        animation: "slide_from_right",
       }}
     >
       <Stack.Screen name="CitizenHome" component={CitizenHomeScreen} />

@@ -1,13 +1,13 @@
-import { useCallback } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
-import { EmptyState, LoadingSpinner, Screen } from '../../../ui/components';
-import { formatDate } from '../../../utils/formatters';
-import { useRoutes } from '../../../hooks/useRoutes';
-import AdminTopBar from '../../admin/components/AdminTopBar';
+import { useCallback } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import COLORS from "../../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
+import { EmptyState, LoadingSpinner, Screen } from "../../../ui/components";
+import { formatDate } from "../../../utils/formatters";
+import { useRoutes } from "../../../hooks/useRoutes";
+import AdminTopBar from "../../admin/components/AdminTopBar";
 
 export default function CollectorRoutesScreen() {
   const navigation = useNavigation();
@@ -31,8 +31,8 @@ export default function CollectorRoutesScreen() {
         <Text style={styles.eyebrow}>OPTIMIZACIÓN DE TRAYECTO</Text>
         <Text style={styles.title}>Rutas del día</Text>
         <Text style={styles.hint}>
-          Próximamente: mapa interactivo y algoritmo Dijkstra para rutas
-          óptimas en Cali.
+          Próximamente: mapa interactivo y algoritmo Dijkstra para rutas óptimas
+          en Cali.
         </Text>
 
         <FlatList
@@ -43,14 +43,18 @@ export default function CollectorRoutesScreen() {
           renderItem={({ item }) => (
             <View style={styles.card}>
               <View style={styles.cardHeader}>
-                <Ionicons name="navigate-outline" size={20} color={COLORS.green} />
+                <Ionicons
+                  name="navigate-outline"
+                  size={20}
+                  color={COLORS.green}
+                />
                 <Text style={styles.cardTitle}>{item.name}</Text>
               </View>
               <Text style={styles.cardMeta}>
-                Estado: {item.status} ·{' '}
+                Estado: {item.status} ·{" "}
                 {item.scheduled_date
                   ? formatDate(item.scheduled_date)
-                  : 'Sin fecha'}
+                  : "Sin fecha"}
               </Text>
               {item.estimated_distance_km != null ? (
                 <Text style={styles.cardDist}>
@@ -80,7 +84,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     ...TYPOGRAPHY.caption,
     color: COLORS.green,
-    fontWeight: '800',
+    fontWeight: "800",
     letterSpacing: 1,
     marginBottom: SPACING.xs,
   },
@@ -108,8 +112,8 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.md,
   },
   cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: SPACING.sm,
     marginBottom: SPACING.sm,
   },

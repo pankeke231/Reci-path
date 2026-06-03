@@ -16,10 +16,10 @@ export const RADIUS = {
 };
 
 export const TYPOGRAPHY = {
-  h1: { fontSize: 28, fontWeight: '800', lineHeight: 34 },
-  h2: { fontSize: 22, fontWeight: '700', lineHeight: 28 },
-  h3: { fontSize: 18, fontWeight: '700', lineHeight: 24 },
-  body: { fontSize: 15, fontWeight: '400', lineHeight: 22 },
-  caption: { fontSize: 13, fontWeight: '500', lineHeight: 18 },
-  label: { fontSize: 13, fontWeight: '600', lineHeight: 18 },
+  h1: { fontSize: 28, fontWeight: "800", lineHeight: 34 },
+  h2: { fontSize: 22, fontWeight: "700", lineHeight: 28 },
+  h3: { fontSize: 18, fontWeight: "700", lineHeight: 24 },
+  body: { fontSize: 15, fontWeight: "400", lineHeight: 22 },
+  caption: { fontSize: 13, fontWeight: "500", lineHeight: 18 },
+  label: { fontSize: 13, fontWeight: "600", lineHeight: 18 },
 };

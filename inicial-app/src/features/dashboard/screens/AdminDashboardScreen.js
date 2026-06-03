@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { ordersService } from '../../../services/ordersService';
-import COLORS from '../../../constants/colors';
-import { SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { ordersService } from "../../../services/ordersService";
+import COLORS from "../../../constants/colors";
+import { SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
 import {
   Card,
   LoadingSpinner,
   Screen,
   SectionHeader,
   StatCard,
-} from '../../../ui/components';
-import { getErrorMessage } from '../../../utils/errors';
+} from "../../../ui/components";
+import { getErrorMessage } from "../../../utils/errors";
 
 export default function AdminDashboardScreen() {
   const [stats, setStats] = useState(null);
@@ -78,9 +78,8 @@ export default function AdminDashboardScreen() {
       <Card>
         <Text style={styles.cardTitle}>Próximas integraciones</Text>
         <Text style={styles.cardDesc}>
-          • Realtime con Supabase Channels{'\n'}
-          • Notificaciones push (Expo Notifications){'\n'}
-          • Analytics y reportes exportables
+          • Realtime con Supabase Channels{"\n"}• Notificaciones push (Expo
+          Notifications){"\n"}• Analytics y reportes exportables
         </Text>
       </Card>
     </Screen>
@@ -89,7 +88,7 @@ export default function AdminDashboardScreen() {
 
 const styles = StyleSheet.create({
   statsRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: SPACING.md,
   },
   gap: { width: SPACING.md },

@@ -1,12 +1,12 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import COLORS from '../constants/colors';
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import COLORS from "../constants/colors";
 
 export default function HeroSection() {
   return (
     <View style={styles.heroSection}>
       <Text style={styles.heroTitle}>
-        Superando la Ineficiencia en la{' '}
+        Superando la Ineficiencia en la{" "}
         <Text style={styles.heroHighlight}>Gestión de Residuos</Text>
       </Text>
 
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   heroTitle: {
     color: COLORS.white,
     fontSize: 32,
-    fontWeight: '800',
+    fontWeight: "800",
     lineHeight: 40,
     letterSpacing: -0.5,
   },
@@ -60,24 +60,24 @@ const styles = StyleSheet.create({
   heroBtnPrimary: {
     marginTop: 28,
     borderRadius: 14,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   heroBtnGradient: {
     paddingVertical: 16,
     paddingHorizontal: 32,
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 14,
   },
   heroBtnPrimaryText: {
     color: COLORS.bg,
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   heroBtnSecondary: {
     marginTop: 12,
     paddingVertical: 14,
     paddingHorizontal: 32,
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 14,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
@@ -85,6 +85,6 @@ const styles = StyleSheet.create({
   heroBtnSecondaryText: {
     color: COLORS.textSecondary,
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

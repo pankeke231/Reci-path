@@ -1,6 +1,6 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native';
-import COLORS from '../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../theme/spacing';
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import COLORS from "../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../theme/spacing";
 
 export default function Input({
   label,

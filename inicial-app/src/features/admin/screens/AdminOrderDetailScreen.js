@@ -1,26 +1,26 @@
-import { useEffect, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../../../hooks/useAuth';
-import { useOrders } from '../../../hooks/useOrders';
-import { profileService } from '../../../services/profileService';
-import { ORDER_STATUS } from '../../../constants/orderStatus';
-import COLORS from '../../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
-import { Screen } from '../../../ui/components';
-import AdminTopBar from '../components/AdminTopBar';
+import { useEffect, useMemo, useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from "../../../hooks/useAuth";
+import { useOrders } from "../../../hooks/useOrders";
+import { profileService } from "../../../services/profileService";
+import { ORDER_STATUS } from "../../../constants/orderStatus";
+import COLORS from "../../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
+import { Screen } from "../../../ui/components";
+import AdminTopBar from "../components/AdminTopBar";
 import {
   formatCompletedDate,
   getWasteTagLabel,
   getWasteTagStyle,
-} from '../utils/collectionHelpers';
+} from "../utils/collectionHelpers";
 import {
   formatPickupDateDisplay,
   getCitizenName,
   getCitizenUsername,
   parseCollectorResponse,
-} from '../../collector/utils/collectorHelpers';
+} from "../../collector/utils/collectorHelpers";
 
 function InfoBlock({ label, value, children }) {
   return (
@@ -86,14 +86,14 @@ export default function AdminOrderDetailScreen() {
             label="FECHA DE RECOGIDA"
             value={formatPickupDateDisplay(pickupDate, order.created_at)}
           />
-          <InfoBlock label="CELULAR" value={citizen?.phone ?? '—'} />
+          <InfoBlock label="CELULAR" value={citizen?.phone ?? "—"} />
         </View>
 
         <InfoBlock label="DIRECCIÓN DE RECOGIDA">
           <View style={styles.addressRow}>
             <Ionicons name="location" size={16} color={COLORS.green} />
             <Text style={styles.blockValue}>
-              {order.address ?? 'Dirección no registrada'}
+              {order.address ?? "Dirección no registrada"}
             </Text>
           </View>
         </InfoBlock>
@@ -109,7 +109,7 @@ export default function AdminOrderDetailScreen() {
         <InfoBlock label="DESCRIPCIÓN DE LA RECOGIDA DE RESIDUO">
           <Text style={styles.description}>
             {description ||
-              'Sin descripción adicional proporcionada por el ciudadano.'}
+              "Sin descripción adicional proporcionada por el ciudadano."}
           </Text>
         </InfoBlock>
 
@@ -117,9 +117,7 @@ export default function AdminOrderDetailScreen() {
           <View style={styles.doneCard}>
             <Text style={styles.doneTitle}>RECOGIDA COMPLETADA</Text>
             <Text style={styles.doneBody}>{response}</Text>
-            <Text style={styles.doneDate}>
-              {formatCompletedDate(order)}
-            </Text>
+            <Text style={styles.doneDate}>{formatCompletedDate(order)}</Text>
           </View>
         ) : (
           <View style={styles.statusCard}>
@@ -144,7 +142,7 @@ const styles = StyleSheet.create({
     marginTop: SPACING.sm,
   },
   grid: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: SPACING.md,
     marginBottom: SPACING.md,
   },
@@ -159,30 +157,30 @@ const styles = StyleSheet.create({
   blockLabel: {
     ...TYPOGRAPHY.caption,
     color: COLORS.textMuted,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.5,
     marginBottom: SPACING.xs,
   },
   blockValue: {
     ...TYPOGRAPHY.body,
     color: COLORS.textPrimary,
-    fontWeight: '600',
+    fontWeight: "600",
     flex: 1,
   },
   addressRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     gap: SPACING.sm,
   },
   wasteTag: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     paddingHorizontal: SPACING.sm,
     paddingVertical: 4,
     borderRadius: RADIUS.sm,
   },
   wasteTagText: {
     ...TYPOGRAPHY.caption,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   description: {
     ...TYPOGRAPHY.body,
@@ -200,13 +198,13 @@ const styles = StyleSheet.create({
   statusTitle: {
     ...TYPOGRAPHY.caption,
     color: COLORS.green,
-    fontWeight: '800',
+    fontWeight: "800",
     marginBottom: SPACING.sm,
   },
   statusValue: {
     ...TYPOGRAPHY.body,
     color: COLORS.textPrimary,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   doneCard: {
     backgroundColor: `${COLORS.green}15`,
@@ -219,19 +217,19 @@ const styles = StyleSheet.create({
   doneTitle: {
     ...TYPOGRAPHY.caption,
     color: COLORS.green,
-    fontWeight: '800',
+    fontWeight: "800",
     marginBottom: SPACING.sm,
   },
   doneBody: {
     ...TYPOGRAPHY.body,
     color: COLORS.textPrimary,
-    fontStyle: 'italic',
+    fontStyle: "italic",
     marginBottom: SPACING.sm,
   },
   doneDate: {
     ...TYPOGRAPHY.caption,
     color: COLORS.textMuted,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   missing: {
     padding: SPACING.lg,

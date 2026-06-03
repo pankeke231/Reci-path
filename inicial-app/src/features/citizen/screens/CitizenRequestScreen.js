@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Alert,
   Modal,
@@ -8,20 +8,18 @@ import {
   Text,
   TextInput,
   View,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useAuth } from '../../../hooks/useAuth';
-import { useOrders } from '../../../hooks/useOrders';
-import { getProfileDisplayName } from '../../../models/user';
-import { wasteService } from '../../../services/wasteService';
-import COLORS from '../../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
-import { Screen } from '../../../ui/components';
-import { getErrorMessage } from '../../../utils/errors';
-import { parseCoordinates } from '../../../utils/validators';
-import { encodeOrderNotes } from '../utils/orderHelpers';
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { useAuth } from "../../../hooks/useAuth";
+import { useOrders } from "../../../hooks/useOrders";
+import { getProfileDisplayName } from "../../../models/user";
+import { wasteService } from "../../../services/wasteService";
+import COLORS from "../../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
+import { Screen } from "../../../ui/components";
+import { getErrorMessage } from "../../../utils/errors";
 
 function FormField({ label, children }) {
   return (
@@ -37,21 +35,21 @@ export default function CitizenRequestScreen() {
   const { profile } = useAuth();
   const { createOrder } = useOrders({ autoFetch: false });
 
-  const [fullName, setFullName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [pickupDate, setPickupDate] = useState('');
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [pickupDate, setPickupDate] = useState("");
   const [wasteTypes, setWasteTypes] = useState([]);
-  const [wasteTypeId, setWasteTypeId] = useState('');
-  const [categoryLabel, setCategoryLabel] = useState('');
-  const [description, setDescription] = useState('');
+  const [wasteTypeId, setWasteTypeId] = useState("");
+  const [categoryLabel, setCategoryLabel] = useState("");
+  const [description, setDescription] = useState("");
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setFullName(getProfileDisplayName(profile));
-    setPhone(profile?.phone ?? '');
-    setAddress(profile?.address ?? '');
+    setPhone(profile?.phone ?? "");
+    setAddress(profile?.address ?? "");
     wasteService.listTypes().then((types) => {
       setWasteTypes(types);
       if (types[0]) {
@@ -74,54 +72,54 @@ export default function CitizenRequestScreen() {
   const handleSubmit = async () => {
     const isoDate = validateDate(pickupDate);
     if (!fullName.trim()) {
-      Alert.alert('Validación', 'El nombre es obligatorio');
+      Alert.alert("Validación", "El nombre es obligatorio");
       return;
     }
     if (!phone.trim()) {
-      Alert.alert('Validación', 'El celular es obligatorio');
+      Alert.alert("Validación", "El celular es obligatorio");
       return;
     }
     if (!address.trim()) {
-      Alert.alert('Validación', 'La dirección es obligatoria');
+      Alert.alert("Validación", "La dirección es obligatoria");
       return;
     }
     if (!isoDate) {
-      Alert.alert('Validación', 'Ingresa la fecha como dd/mm/aaaa');
+      Alert.alert("Validación", "Ingresa la fecha como dd/mm/aaaa");
       return;
     }
     if (!wasteTypeId) {
-      Alert.alert('Validación', 'Selecciona una categoría');
+      Alert.alert("Validación", "Selecciona una categoría");
       return;
     }
     if (!description.trim()) {
-      Alert.alert('Validación', 'Agrega una descripción breve');
+      Alert.alert("Validación", "Agrega una descripción breve");
       return;
     }
-
-    const coords =
-      parseCoordinates(profile?.latitude, profile?.longitude) ??
-      parseCoordinates('3.4516', '-76.5320');
 
     setLoading(true);
     try {
       await createOrder({
         waste_type_id: wasteTypeId,
-        quantity_kg: 5,
         address: address.trim(),
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-        notes: encodeOrderNotes(isoDate, description.trim()),
-      });
-      Alert.alert('Solicitud enviada', 'Tu recogida fue registrada correctamente.', [
-        {
-          text: 'Ver historial',
-          onPress: () => {
-            navigation.replace('CitizenHistory');
-          },
+        detalles: {
+          pickup_date: isoDate,
+          description: description.trim(),
         },
-      ]);
+      });
+      Alert.alert(
+        "Solicitud enviada",
+        "Tu recogida fue registrada correctamente.",
+        [
+          {
+            text: "Ver historial",
+            onPress: () => {
+              navigation.replace("CitizenHistory");
+            },
+          },
+        ],
+      );
     } catch (error) {
-      Alert.alert('Error', getErrorMessage(error));
+      Alert.alert("Error", getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -135,7 +133,7 @@ export default function CitizenRequestScreen() {
         </Pressable>
         <View style={styles.brand}>
           <Ionicons name="leaf" size={18} color={COLORS.green} />
-          <Text style={styles.brandText}>S.E.A</Text>
+          <Text style={styles.brandText}>Reci-path</Text>
         </View>
         <View style={styles.backBtn} />
       </View>
@@ -200,7 +198,7 @@ export default function CitizenRequestScreen() {
                 !categoryLabel && styles.selectPlaceholder,
               ]}
             >
-              {categoryLabel || 'Elegir categoría'}
+              {categoryLabel || "Elegir categoría"}
             </Text>
             <Ionicons name="chevron-down" size={18} color={COLORS.textMuted} />
           </Pressable>
@@ -219,7 +217,11 @@ export default function CitizenRequestScreen() {
           />
         </FormField>
 
-        <Pressable onPress={handleSubmit} disabled={loading} style={styles.submitWrap}>
+        <Pressable
+          onPress={handleSubmit}
+          disabled={loading}
+          style={styles.submitWrap}
+        >
           <LinearGradient
             colors={[COLORS.green, COLORS.greenDark]}
             start={{ x: 0, y: 0 }}
@@ -227,7 +229,7 @@ export default function CitizenRequestScreen() {
             style={styles.submitBtn}
           >
             <Text style={styles.submitText}>
-              {loading ? 'Enviando…' : 'Enviar solicitud'}
+              {loading ? "Enviando…" : "Enviar solicitud"}
             </Text>
             <Ionicons name="paper-plane-outline" size={20} color={COLORS.bg} />
           </LinearGradient>
@@ -263,9 +265,9 @@ export default function CitizenRequestScreen() {
 
 const styles = StyleSheet.create({
   topBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: SPACING.lg,
     paddingTop: SPACING.sm,
     paddingBottom: SPACING.md,
@@ -273,12 +275,12 @@ const styles = StyleSheet.create({
   backBtn: {
     width: 40,
     height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   brand: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 6,
   },
   brandText: {
@@ -303,7 +305,7 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.caption,
     color: COLORS.textSecondary,
     marginBottom: SPACING.sm,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   input: {
     backgroundColor: COLORS.inputBg,
@@ -325,9 +327,9 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md,
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.md,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   selectText: {
     color: COLORS.textPrimary,
@@ -339,12 +341,12 @@ const styles = StyleSheet.create({
   submitWrap: {
     marginTop: SPACING.lg,
     borderRadius: RADIUS.md,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   submitBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: SPACING.sm,
     paddingVertical: SPACING.md + 2,
   },
@@ -352,12 +354,12 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.label,
     color: COLORS.bg,
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   modalOverlay: {
     flex: 1,
     backgroundColor: COLORS.overlay,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   modalCard: {
     backgroundColor: COLORS.cardBg,

@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
-import { adminService } from '../services/adminService';
-import { getErrorMessage } from '../utils/errors';
+import { useCallback, useEffect, useState } from "react";
+import { adminService } from "../services/adminService";
+import { getErrorMessage } from "../utils/errors";
 
 export function useCollectors({ autoFetch = true } = {}) {
   const [collectors, setCollectors] = useState([]);

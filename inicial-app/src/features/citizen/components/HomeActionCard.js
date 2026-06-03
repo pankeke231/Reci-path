@@ -1,17 +1,17 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import COLORS from "../../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
 
 export default function HomeActionCard({
   title,
   subtitle,
   icon,
-  variant = 'primary',
+  variant = "primary",
   onPress,
 }) {
-  if (variant === 'primary') {
+  if (variant === "primary") {
     return (
       <Pressable onPress={onPress} style={styles.primaryWrap}>
         <LinearGradient
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   primaryWrap: {
     marginBottom: SPACING.md,
     borderRadius: RADIUS.xl,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   primaryCard: {
     padding: SPACING.lg,
@@ -65,9 +65,9 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 14,
-    backgroundColor: 'rgba(255,255,255,0.25)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "rgba(255,255,255,0.25)",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: SPACING.md,
   },
   primaryTitle: {
@@ -77,18 +77,18 @@ const styles = StyleSheet.create({
   },
   primarySubtitle: {
     ...TYPOGRAPHY.body,
-    color: 'rgba(11, 17, 32, 0.75)',
+    color: "rgba(11, 17, 32, 0.75)",
     marginTop: SPACING.xs,
-    maxWidth: '85%',
+    maxWidth: "85%",
   },
   chevron: {
-    position: 'absolute',
+    position: "absolute",
     right: SPACING.lg,
     top: SPACING.lg,
   },
   secondaryCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: COLORS.cardBg,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
@@ -102,8 +102,8 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 14,
     backgroundColor: `${COLORS.green}18`,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   secondaryText: {
     flex: 1,

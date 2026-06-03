@@ -1,4 +1,4 @@
-import { ROLES } from '../constants/roles';
+import { ROLES } from "../constants/roles";
 
 /**
  * @typedef {'citizen'|'collector'|'admin'} UserRole
@@ -19,6 +19,8 @@ import { ROLES } from '../constants/roles';
  * @property {string|null} avatar_url
  * @property {number|null} latitude
  * @property {number|null} longitude
+ * @property {string|null} vehicle_type
+ * @property {string|null} license_plate
  * @property {string} created_at
  * @property {string} updated_at
  */
@@ -28,24 +30,26 @@ import { ROLES } from '../constants/roles';
  * @returns {UserProfile}
  */
 export function createUserProfile(data = {}) {
-  const firstNames = data.first_names ?? '';
-  const lastNames = data.last_names ?? '';
+  const firstNames = data.first_names ?? "";
+  const lastNames = data.last_names ?? "";
   const composedName = `${firstNames} ${lastNames}`.trim();
 
   return {
-    id: data.id ?? '',
-    email: data.email ?? '',
-    document_id: data.document_id ?? '',
+    id: data.id ?? "",
+    email: data.email ?? "",
+    document_id: data.document_id ?? "",
     first_names: firstNames,
     last_names: lastNames,
     full_name: data.full_name?.trim() || composedName,
     role: data.role ?? ROLES.CITIZEN,
     address: data.address ?? null,
     phone: data.phone ?? null,
-    account_status: data.account_status ?? 'active',
+    account_status: data.account_status ?? "active",
     avatar_url: data.avatar_url ?? null,
     latitude: data.latitude ?? null,
     longitude: data.longitude ?? null,
+    vehicle_type: data.vehicle_type ?? null,
+    license_plate: data.license_plate ?? null,
     created_at: data.created_at ?? new Date().toISOString(),
     updated_at: data.updated_at ?? new Date().toISOString(),
   };
@@ -55,9 +59,10 @@ export function createUserProfile(data = {}) {
  * @param {UserProfile|null|undefined} profile
  */
 export function getProfileDisplayName(profile) {
-  if (!profile) return '';
-  const composed = `${profile.first_names ?? ''} ${profile.last_names ?? ''}`.trim();
-  return composed || profile.full_name || '';
+  if (!profile) return "";
+  const composed =
+    `${profile.first_names ?? ""} ${profile.last_names ?? ""}`.trim();
+  return composed || profile.full_name || "";
 }
 
 /**
@@ -65,7 +70,7 @@ export function getProfileDisplayName(profile) {
  */
 export function getProfileFirstName(profile) {
   const name = getProfileDisplayName(profile);
-  return name.split(' ')[0] || '';
+  return name.split(" ")[0] || "";
 }
 
 /**

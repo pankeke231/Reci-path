@@ -1,7 +1,7 @@
-import { useCallback, useState } from 'react';
-import { profileService } from '../services/profileService';
-import { getErrorMessage } from '../utils/errors';
-import { useAuth } from './useAuth';
+import { useCallback, useState } from "react";
+import { profileService } from "../services/profileService";
+import { getErrorMessage } from "../utils/errors";
+import { useAuth } from "./useAuth";
 
 export function useProfile() {
   const { profile, refreshProfile } = useAuth();

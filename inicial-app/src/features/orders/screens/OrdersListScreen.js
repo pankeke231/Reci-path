@@ -1,17 +1,17 @@
-import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useOrders } from '../../../hooks/useOrders';
-import { useAuth } from '../../../hooks/useAuth';
-import { ROLES } from '../../../constants/roles';
-import COLORS from '../../../constants/colors';
-import { SPACING } from '../../../ui/theme/spacing';
+import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useOrders } from "../../../hooks/useOrders";
+import { useAuth } from "../../../hooks/useAuth";
+import { ROLES } from "../../../constants/roles";
+import COLORS from "../../../constants/colors";
+import { SPACING } from "../../../ui/theme/spacing";
 import {
   EmptyState,
   LoadingSpinner,
   Screen,
   SectionHeader,
-} from '../../../ui/components';
-import OrderCard from '../components/OrderCard';
+} from "../../../ui/components";
+import OrderCard from "../components/OrderCard";
 
 export default function OrdersListScreen() {
   const navigation = useNavigation();
@@ -27,11 +27,11 @@ export default function OrdersListScreen() {
     <Screen padded={false}>
       <View style={styles.headerWrap}>
         <SectionHeader
-          title={isCitizen ? 'Mis pedidos' : 'Pedidos'}
+          title={isCitizen ? "Mis pedidos" : "Pedidos"}
           subtitle={
             isCitizen
-              ? 'Historial de solicitudes de recolección'
-              : 'Pedidos asignados y pendientes'
+              ? "Historial de solicitudes de recolección"
+              : "Pedidos asignados y pendientes"
           }
         />
       </View>
@@ -53,11 +53,9 @@ export default function OrdersListScreen() {
             icon="cube-outline"
             title="Sin pedidos"
             description="Aún no hay solicitudes de recolección registradas."
-            actionLabel={isCitizen ? 'Crear pedido' : undefined}
+            actionLabel={isCitizen ? "Crear pedido" : undefined}
             onAction={
-              isCitizen
-                ? () => navigation.navigate('CreateOrder')
-                : undefined
+              isCitizen ? () => navigation.navigate("CreateOrder") : undefined
             }
           />
         }

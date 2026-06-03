@@ -1,19 +1,19 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import COLORS from '../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../theme/spacing';
+import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import COLORS from "../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../theme/spacing";
 
 export default function Button({
   title,
   onPress,
-  variant = 'primary',
+  variant = "primary",
   loading = false,
   disabled = false,
   style,
 }) {
   const isDisabled = disabled || loading;
 
-  if (variant === 'primary') {
+  if (variant === "primary") {
     return (
       <Pressable
         onPress={onPress}
@@ -58,7 +58,7 @@ export default function Button({
         <Text
           style={[
             styles.secondaryText,
-            variant === 'ghost' && styles.ghostText,
+            variant === "ghost" && styles.ghostText,
           ]}
         >
           {title}
@@ -71,12 +71,12 @@ export default function Button({
 const styles = StyleSheet.create({
   wrapper: {
     borderRadius: RADIUS.md,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   gradient: {
     paddingVertical: SPACING.md,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     minHeight: 52,
   },
   primaryText: {
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
   },
   secondary: {
     paddingVertical: SPACING.md,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: RADIUS.md,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,

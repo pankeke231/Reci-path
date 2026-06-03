@@ -1,13 +1,13 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import COLORS from '../../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
-import { formatWeight } from '../../../utils/formatters';
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import COLORS from "../../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
+import { formatWeight } from "../../../utils/formatters";
 import {
   estimatePoints,
   formatCompletedHeader,
   getRecyclerLabel,
   getWasteLabel,
-} from '../utils/orderHelpers';
+} from "../utils/orderHelpers";
 
 export default function CompletedOrderCard({ order, onPress }) {
   const points = estimatePoints(order.quantity_kg);
@@ -43,13 +43,13 @@ const styles = StyleSheet.create({
   header: {
     ...TYPOGRAPHY.caption,
     color: COLORS.textMuted,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.6,
     marginBottom: SPACING.sm,
   },
   body: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: SPACING.sm,
     marginBottom: SPACING.sm,
   },
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   pointsText: {
     ...TYPOGRAPHY.caption,
     color: COLORS.green,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   footer: {
     ...TYPOGRAPHY.caption,

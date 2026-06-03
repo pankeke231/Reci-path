@@ -1,22 +1,22 @@
-import { useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { ORDER_STATUS } from '../../../constants/orderStatus';
-import COLORS from '../../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
-import { Screen } from '../../../ui/components';
-import { formatDate } from '../../../utils/formatters';
-import { useAuth } from '../../../hooks/useAuth';
-import { useOrders } from '../../../hooks/useOrders';
-import CitizenHeader from '../components/CitizenHeader';
+import { useMemo } from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { ORDER_STATUS } from "../../../constants/orderStatus";
+import COLORS from "../../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
+import { Screen } from "../../../ui/components";
+import { formatDate } from "../../../utils/formatters";
+import { useAuth } from "../../../hooks/useAuth";
+import { useOrders } from "../../../hooks/useOrders";
+import CitizenHeader from "../components/CitizenHeader";
 import {
   getPickupDisplayDate,
   getRecyclerLabel,
   getWasteLabel,
   parseOrderNotes,
-} from '../utils/orderHelpers';
+} from "../utils/orderHelpers";
 
 function InfoCell({ label, value }) {
   return (
@@ -88,22 +88,20 @@ export default function CitizenOrderDetailScreen() {
         <View style={styles.fullCell}>
           <Text style={styles.cellLabel}>DIRECCIÓN DE RECOGIDA</Text>
           <Text style={styles.cellValue}>
-            {order.address ?? 'Dirección no registrada'}
+            {order.address ?? "Dirección no registrada"}
           </Text>
         </View>
 
         <View style={styles.fullCell}>
           <Text style={styles.cellLabel}>CELULAR</Text>
-          <Text style={styles.cellValue}>
-            {profile?.phone ?? '—'}
-          </Text>
+          <Text style={styles.cellValue}>{profile?.phone ?? "—"}</Text>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>DESCRIPCIÓN DE LA RECOGIDA</Text>
           <Text style={styles.sectionBody}>
             {description ||
-              'Sin descripción adicional. El ciudadano registró la solicitud desde la app S.E.A.'}
+              "Sin descripción adicional. El ciudadano registró la solicitud desde la app S.E.A."}
           </Text>
         </View>
 
@@ -121,7 +119,7 @@ export default function CitizenOrderDetailScreen() {
         ) : (
           <View style={styles.pendingCard}>
             <Text style={styles.pendingText}>
-              Estado actual: {order.status.replace('_', ' ').toUpperCase()}
+              Estado actual: {order.status.replace("_", " ").toUpperCase()}
             </Text>
             <Text style={styles.pendingSub}>
               Un recolector confirmará la recogida próximamente.
@@ -151,7 +149,7 @@ const styles = StyleSheet.create({
     paddingBottom: SPACING.xxl,
   },
   grid: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: SPACING.md,
     marginBottom: SPACING.md,
   },
@@ -174,14 +172,14 @@ const styles = StyleSheet.create({
   cellLabel: {
     ...TYPOGRAPHY.caption,
     color: COLORS.textMuted,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.5,
     marginBottom: SPACING.xs,
   },
   cellValue: {
     ...TYPOGRAPHY.body,
     color: COLORS.textPrimary,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   section: {
     marginBottom: SPACING.lg,
@@ -189,7 +187,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     ...TYPOGRAPHY.caption,
     color: COLORS.textMuted,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.5,
     marginBottom: SPACING.sm,
   },
@@ -209,20 +207,20 @@ const styles = StyleSheet.create({
   responseTitle: {
     ...TYPOGRAPHY.caption,
     color: COLORS.green,
-    fontWeight: '800',
+    fontWeight: "800",
     letterSpacing: 0.6,
     marginBottom: SPACING.sm,
   },
   responseQuote: {
     ...TYPOGRAPHY.body,
     color: COLORS.textPrimary,
-    fontStyle: 'italic',
+    fontStyle: "italic",
     lineHeight: 22,
     marginBottom: SPACING.md,
   },
   recyclerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: SPACING.sm,
   },
   recyclerAvatar: {
@@ -230,8 +228,8 @@ const styles = StyleSheet.create({
     height: 36,
     borderRadius: 18,
     backgroundColor: COLORS.cardBg,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   recyclerName: {
     ...TYPOGRAPHY.label,
@@ -256,19 +254,19 @@ const styles = StyleSheet.create({
   },
   closeWrap: {
     borderRadius: RADIUS.md,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   closeBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: SPACING.sm,
     paddingVertical: SPACING.md + 2,
   },
   closeText: {
     ...TYPOGRAPHY.label,
     color: COLORS.bg,
-    fontWeight: '800',
+    fontWeight: "800",
     letterSpacing: 1,
   },
   missing: {

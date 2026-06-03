@@ -1,19 +1,14 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../../../hooks/useAuth';
-import { getProfileFirstName } from '../../../models/user';
-import { useOrders } from '../../../hooks/useOrders';
-import { useRoutes } from '../../../hooks/useRoutes';
-import { ORDER_STATUS } from '../../../constants/orderStatus';
-import COLORS from '../../../constants/colors';
-import { SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
-import {
-  Card,
-  Screen,
-  SectionHeader,
-  StatCard,
-} from '../../../ui/components';
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../../../hooks/useAuth";
+import { getProfileFirstName } from "../../../models/user";
+import { useOrders } from "../../../hooks/useOrders";
+import { useRoutes } from "../../../hooks/useRoutes";
+import { ORDER_STATUS } from "../../../constants/orderStatus";
+import COLORS from "../../../constants/colors";
+import { SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
+import { Card, Screen, SectionHeader, StatCard } from "../../../ui/components";
 
 export default function CollectorDashboardScreen() {
   const navigation = useNavigation();
@@ -38,7 +33,7 @@ export default function CollectorDashboardScreen() {
   return (
     <Screen scroll>
       <SectionHeader
-        title={`Operaciones — ${getProfileFirstName(profile) || 'Recolector'}`}
+        title={`Operaciones — ${getProfileFirstName(profile) || "Recolector"}`}
         subtitle="Pedidos y rutas del día"
       />
 
@@ -58,7 +53,7 @@ export default function CollectorDashboardScreen() {
         />
       </View>
 
-      <Card onPress={() => navigation.navigate('CollectorRoutes')}>
+      <Card onPress={() => navigation.navigate("CollectorRoutes")}>
         <Text style={styles.cardTitle}>Mapa de rutas</Text>
         <Text style={styles.cardDesc}>
           Visualiza rutas planificadas. Próximamente: mapa interactivo y
@@ -66,12 +61,12 @@ export default function CollectorDashboardScreen() {
         </Text>
       </Card>
 
-      <Card onPress={() => navigation.navigate('CollectorOrders')}>
+      <Card onPress={() => navigation.navigate("CollectorOrders")}>
         <Text style={styles.cardTitle}>Pedidos asignados</Text>
         <Text style={styles.cardDesc}>
           {orders.length
             ? `${orders.length} pedido(s) en tu historial`
-            : 'Sin pedidos asignados aún'}
+            : "Sin pedidos asignados aún"}
         </Text>
       </Card>
     </Screen>
@@ -80,7 +75,7 @@ export default function CollectorDashboardScreen() {
 
 const styles = StyleSheet.create({
   statsRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: SPACING.md,
   },
   gap: { width: SPACING.md },

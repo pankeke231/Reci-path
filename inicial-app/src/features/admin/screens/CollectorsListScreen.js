@@ -1,27 +1,25 @@
-import { useMemo, useState } from 'react';
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useMemo, useState } from "react";
 import {
   FlatList,
+  Image,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
-} from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { useCallback } from 'react';
-import COLORS from '../../../constants/colors';
-import { SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
-import { EmptyState, LoadingSpinner, Screen } from '../../../ui/components';
-import { useCollectors } from '../../../hooks/useCollectors';
-import { getProfileDisplayName } from '../../../models/user';
-import AdminTopBar from '../components/AdminTopBar';
-import CollectorListItem from '../components/CollectorListItem';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { MaterialIcons } from "@expo/vector-icons";
+import COLORS from "../../../constants/colors";
+import { SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
+import { useCollectors } from "../../../hooks/useCollectors";
+import { getProfileDisplayName } from "../../../models/user";
 
 export default function CollectorsListScreen() {
   const navigation = useNavigation();
   const { collectors, loading, fetchCollectors } = useCollectors();
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   useFocusEffect(
     useCallback(() => {
@@ -34,124 +32,281 @@ export default function CollectorsListScreen() {
     if (!q) return collectors;
     return collectors.filter((c) => {
       const name = getProfileDisplayName(c).toLowerCase();
-      const doc = (c.document_id ?? '').toLowerCase();
+      const doc = (c.document_id ?? "").toLowerCase();
       return name.includes(q) || doc.includes(q);
     });
   }, [collectors, query]);
 
-  if (loading && !collectors.length) {
-    return <LoadingSpinner message="Cargando recicladores…" />;
-  }
+  const renderItem = ({ item }) => {
+    const name = getProfileDisplayName(item);
+    return (
+      <View style={styles.card}>
+        <View style={styles.leftSection}>
+          {item.avatar_url ? (
+            <Image source={{ uri: item.avatar_url }} style={styles.avatar} />
+          ) : (
+            <View style={styles.avatarPlaceholder}>
+              <MaterialIcons name="person" size={30} color="#94A3B8" />
+            </View>
+          )}
 
-  return (
-    <Screen padded={false}>
-      <AdminTopBar onBack={() => navigation.goBack()} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.name}>{name}</Text>
 
-      <View style={styles.content}>
-        <Text style={styles.eyebrow}>ADMINISTRACIÓN DE USUARIOS</Text>
-        <Text style={styles.title}>Listado de recicladores</Text>
+            <View style={styles.row}>
+              <MaterialIcons name="badge" size={16} color="#94A3B8" />
+              <Text style={styles.document}>{item.document_id || "—"}</Text>
+            </View>
 
-        <View style={styles.searchWrap}>
-          <Ionicons name="search" size={18} color={COLORS.textMuted} />
-          <TextInput
-            style={styles.search}
-            value={query}
-            onChangeText={setQuery}
-            placeholder="Buscar por nombre o ID..."
-            placeholderTextColor={COLORS.textMuted}
-          />
+            <View style={styles.infoContainer}>
+              <Text style={styles.info}>📞 {item.phone || "—"}</Text>
+              {(item.license_plate || item.vehicle_type) && (
+                <Text style={styles.info}>
+                  🚗 {item.license_plate || "—"} - {item.vehicle_type || "—"}
+                </Text>
+              )}
+            </View>
+          </View>
         </View>
 
-        <FlatList
-          data={filtered}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.list}
-          renderItem={({ item }) => (
-            <CollectorListItem
-              collector={item}
-              onView={() =>
-                navigation.navigate('CollectorDetail', { collectorId: item.id })
-              }
-              onEdit={() =>
-                navigation.navigate('CollectorEdit', { collectorId: item.id })
-              }
-            />
-          )}
-          ListEmptyComponent={
-            <EmptyState
-              icon="people-outline"
-              title="Sin recicladores"
-              description="Registra el primer recolector con el botón +"
-              actionLabel="Registrar reciclador"
-              onAction={() => navigation.navigate('RegisterCollector')}
-            />
-          }
+        <View style={styles.actions}>
+          <Pressable
+            style={styles.iconButton}
+            onPress={() =>
+              navigation.navigate("CollectorDetail", { collectorId: item.id })
+            }
+          >
+            <MaterialIcons name="visibility" size={22} color="#10B981" />
+          </Pressable>
+
+          <Pressable
+            style={styles.iconButton}
+            onPress={() =>
+              navigation.navigate("CollectorEdit", { collectorId: item.id })
+            }
+          >
+            <MaterialIcons name="edit" size={22} color="#10B981" />
+          </Pressable>
+        </View>
+      </View>
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Pressable
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <MaterialIcons name="arrow-back" size={22} color="#10B981" />
+        </Pressable>
+
+        <View>
+          <Text style={styles.logo}>Reci-path</Text>
+          <Text style={styles.subtitle}>Administración de Usuarios</Text>
+        </View>
+      </View>
+
+      <View style={styles.titleContainer}>
+        <Text style={styles.sectionLabel}>RECICLADORES</Text>
+        <Text style={styles.title}>Listado de recicladores</Text>
+      </View>
+
+      <View style={styles.searchContainer}>
+        <MaterialIcons name="search" size={22} color="#94A3B8" />
+        <TextInput
+          placeholder="Buscar por nombre o ID..."
+          placeholderTextColor="#64748B"
+          value={query}
+          onChangeText={setQuery}
+          style={styles.searchInput}
         />
       </View>
 
+      <FlatList
+        data={filtered}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 120 }}
+        ListEmptyComponent={
+          !loading ? (
+            <View style={styles.empty}>
+              <Text style={styles.emptyText}>Sin recicladores registrados</Text>
+            </View>
+          ) : null
+        }
+      />
+
       <Pressable
         style={styles.fab}
-        onPress={() => navigation.navigate('RegisterCollector')}
+        onPress={() => navigation.navigate("RegisterCollector")}
       >
-        <Ionicons name="add" size={28} color={COLORS.bg} />
+        <MaterialIcons name="add" size={34} color="#FFF" />
       </Pressable>
-    </Screen>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  content: {
+  container: {
     flex: 1,
-    paddingHorizontal: SPACING.lg,
+    backgroundColor: "#0F172A",
+    paddingHorizontal: 20,
   },
-  eyebrow: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.green,
-    fontWeight: '800',
-    letterSpacing: 1,
-    marginBottom: SPACING.xs,
+
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+    marginBottom: 20,
   },
+
+  backButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: "#1E293B",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 15,
+  },
+
+  logo: {
+    color: "#10B981",
+    fontSize: 22,
+    fontWeight: "800",
+  },
+
+  subtitle: {
+    color: "#94A3B8",
+    fontSize: 12,
+  },
+
+  titleContainer: {
+    marginBottom: 20,
+  },
+
+  sectionLabel: {
+    color: "#10B981",
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 2,
+  },
+
   title: {
-    ...TYPOGRAPHY.h1,
-    color: COLORS.textPrimary,
-    fontSize: 26,
-    marginBottom: SPACING.lg,
+    color: "#FFF",
+    fontSize: 32,
+    fontWeight: "800",
+    marginTop: 6,
   },
-  searchWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.sm,
-    backgroundColor: COLORS.inputBg,
-    borderWidth: 1,
-    borderColor: COLORS.cardBorder,
-    borderRadius: 12,
-    paddingHorizontal: SPACING.md,
-    marginBottom: SPACING.lg,
+
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#1E293B",
+    borderRadius: 18,
+    paddingHorizontal: 15,
+    marginBottom: 20,
   },
-  search: {
+
+  searchInput: {
     flex: 1,
-    color: COLORS.textPrimary,
-    paddingVertical: SPACING.md,
-    fontSize: 15,
+    color: "#FFF",
+    height: 52,
+    marginLeft: 10,
   },
-  list: {
-    paddingBottom: 100,
+
+  card: {
+    backgroundColor: "#1E293B",
+    borderRadius: 24,
+    padding: 18,
+    marginBottom: 14,
   },
+
+  leftSection: {
+    flexDirection: "row",
+  },
+
+  avatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    marginRight: 14,
+  },
+
+  avatarPlaceholder: {
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    backgroundColor: "#334155",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 14,
+  },
+
+  name: {
+    color: "#FFF",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 4,
+  },
+
+  document: {
+    color: "#94A3B8",
+    marginLeft: 5,
+  },
+
+  infoContainer: {
+    marginTop: 10,
+    gap: 4,
+  },
+
+  info: {
+    color: "#CBD5E1",
+  },
+
+  actions: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: 15,
+    gap: 12,
+  },
+
+  iconButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    backgroundColor: "#334155",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   fab: {
-    position: 'absolute',
-    right: SPACING.lg,
-    bottom: SPACING.xl,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: COLORS.green,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 6,
-    shadowColor: COLORS.green,
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
+    position: "absolute",
+    right: 25,
+    bottom: 30,
+    width: 65,
+    height: 65,
+    borderRadius: 32.5,
+    backgroundColor: "#10B981",
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 8,
+  },
+
+  empty: {
+    padding: 40,
+    alignItems: "center",
+  },
+  emptyText: {
+    color: "#94A3B8",
+    fontSize: 16,
   },
 });

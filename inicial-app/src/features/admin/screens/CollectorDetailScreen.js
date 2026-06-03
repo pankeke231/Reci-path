@@ -1,19 +1,19 @@
-import { useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
-import { Button, Screen } from '../../../ui/components';
-import { useCollectors } from '../../../hooks/useCollectors';
-import { getProfileDisplayName } from '../../../models/user';
-import AdminTopBar from '../components/AdminTopBar';
+import { useMemo } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import COLORS from "../../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
+import { Button, Screen } from "../../../ui/components";
+import { useCollectors } from "../../../hooks/useCollectors";
+import { getProfileDisplayName } from "../../../models/user";
+import AdminTopBar from "../components/AdminTopBar";
 
 function Row({ label, value }) {
   return (
     <View style={styles.row}>
       <Text style={styles.rowLabel}>{label}</Text>
-      <Text style={styles.rowValue}>{value || '—'}</Text>
+      <Text style={styles.rowValue}>{value || "—"}</Text>
     </View>
   );
 }
@@ -57,7 +57,7 @@ export default function CollectorDetailScreen() {
         <Button
           title="Editar recolector"
           onPress={() =>
-            navigation.navigate('CollectorEdit', { collectorId: collector.id })
+            navigation.navigate("CollectorEdit", { collectorId: collector.id })
           }
         />
       </ScrollView>
@@ -77,15 +77,15 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.cardBg,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: SPACING.md,
   },
   name: {
     ...TYPOGRAPHY.h2,
     color: COLORS.textPrimary,
-    textAlign: 'center',
+    textAlign: "center",
   },
   card: {
     backgroundColor: COLORS.cardBg,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   rowLabel: {
     ...TYPOGRAPHY.caption,
     color: COLORS.textMuted,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 0.5,
   },
   rowValue: {

@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { Ionicons, Feather } from '@expo/vector-icons';
-import COLORS from '../constants/colors';
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Ionicons, Feather } from "@expo/vector-icons";
+import COLORS from "../constants/colors";
 
 export default function Header() {
   return (
@@ -18,22 +18,22 @@ export default function Header() {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 24,
     paddingTop: 56,
     paddingBottom: 16,
   },
   headerLogo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 6,
   },
   headerTitle: {
     color: COLORS.white,
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 1,
   },
   headerMenuBtn: {
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.cardBg,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

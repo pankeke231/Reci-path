@@ -12,10 +12,10 @@
  */
 
 export const ROUTE_STATUS = {
-  PLANNED: 'planned',
-  ACTIVE: 'active',
-  COMPLETED: 'completed',
-  CANCELLED: 'cancelled',
+  PLANNED: "planned",
+  ACTIVE: "active",
+  COMPLETED: "completed",
+  CANCELLED: "cancelled",
 };
 
 /**
@@ -24,9 +24,9 @@ export const ROUTE_STATUS = {
  */
 export function createRoute(data = {}) {
   return {
-    id: data.id ?? '',
-    name: data.name ?? '',
-    collector_id: data.collector_id ?? '',
+    id: data.id ?? "",
+    name: data.name ?? "",
+    collector_id: data.collector_id ?? "",
     status: data.status ?? ROUTE_STATUS.PLANNED,
     scheduled_date: data.scheduled_date ?? null,
     path_geojson: data.path_geojson ?? null,

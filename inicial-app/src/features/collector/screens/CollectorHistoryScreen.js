@@ -1,29 +1,24 @@
-import { useCallback, useState } from 'react';
-import {
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  View,
-} from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { useAuth } from '../../../hooks/useAuth';
-import { useOrders } from '../../../hooks/useOrders';
-import COLORS from '../../../constants/colors';
-import { SPACING } from '../../../ui/theme/spacing';
-import { EmptyState, LoadingSpinner, Screen } from '../../../ui/components';
-import { COLLECTION_TABS } from '../../admin/constants';
-import CitizenHeader from '../../citizen/components/CitizenHeader';
-import SegmentedTabs from '../../citizen/components/SegmentedTabs';
-import ReceivedCollectionCard from '../../admin/components/ReceivedCollectionCard';
-import CompletedCollectionCard from '../../admin/components/CompletedCollectionCard';
+import { useCallback, useState } from "react";
+import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useAuth } from "../../../hooks/useAuth";
+import { useOrders } from "../../../hooks/useOrders";
+import COLORS from "../../../constants/colors";
+import { SPACING } from "../../../ui/theme/spacing";
+import { EmptyState, LoadingSpinner, Screen } from "../../../ui/components";
+import { COLLECTION_TABS } from "../../admin/constants";
+import CitizenHeader from "../../citizen/components/CitizenHeader";
+import SegmentedTabs from "../../citizen/components/SegmentedTabs";
+import ReceivedCollectionCard from "../../admin/components/ReceivedCollectionCard";
+import CompletedCollectionCard from "../../admin/components/CompletedCollectionCard";
 import {
   filterCollectorCompleted,
   filterReceivedOrders,
-} from '../utils/collectorHelpers';
+} from "../utils/collectorHelpers";
 
 const TABS = [
-  { key: COLLECTION_TABS.RECEIVED, label: 'RECIBIDAS' },
-  { key: COLLECTION_TABS.COMPLETED, label: 'COMPLETADAS' },
+  { key: COLLECTION_TABS.RECEIVED, label: "RECIBIDAS" },
+  { key: COLLECTION_TABS.COMPLETED, label: "COMPLETADAS" },
 ];
 
 export default function CollectorHistoryScreen() {
@@ -53,7 +48,7 @@ export default function CollectorHistoryScreen() {
         title="Historial de recogidas"
         showBack
         onBack={() => navigation.goBack()}
-        onProfile={() => navigation.navigate('CollectorProfile')}
+        onProfile={() => navigation.navigate("CollectorProfile")}
       />
 
       <View style={styles.content}>
@@ -76,7 +71,7 @@ export default function CollectorHistoryScreen() {
                 order={item}
                 showChevron
                 onPress={() =>
-                  navigation.navigate('CollectorOrderDetail', {
+                  navigation.navigate("CollectorOrderDetail", {
                     orderId: item.id,
                   })
                 }
@@ -85,7 +80,7 @@ export default function CollectorHistoryScreen() {
               <CompletedCollectionCard
                 order={item}
                 onPress={() =>
-                  navigation.navigate('CollectorOrderDetail', {
+                  navigation.navigate("CollectorOrderDetail", {
                     orderId: item.id,
                   })
                 }
@@ -97,13 +92,13 @@ export default function CollectorHistoryScreen() {
               icon="reload-outline"
               title={
                 tab === COLLECTION_TABS.RECEIVED
-                  ? 'Sin recogidas recibidas'
-                  : 'Sin recogidas completadas'
+                  ? "Sin recogidas recibidas"
+                  : "Sin recogidas completadas"
               }
               description={
                 tab === COLLECTION_TABS.RECEIVED
-                  ? 'Las solicitudes pendientes aparecerán aquí.'
-                  : 'Tus recolecciones finalizadas se listarán aquí.'
+                  ? "Las solicitudes pendientes aparecerán aquí."
+                  : "Tus recolecciones finalizadas se listarán aquí."
               }
             />
           }

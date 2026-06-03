@@ -1,13 +1,13 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import COLORS from '../../../constants/colors';
-import { RADIUS, SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import COLORS from "../../../constants/colors";
+import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
 import {
   getCollectionAddress,
   getReceivedSchedule,
   getWasteTagLabel,
   getWasteTagStyle,
-} from '../utils/collectionHelpers';
+} from "../utils/collectionHelpers";
 
 export default function ReceivedCollectionCard({
   order,
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.md,
   },
   tag: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     paddingHorizontal: SPACING.sm,
     paddingVertical: 4,
     borderRadius: RADIUS.sm,
@@ -60,18 +60,18 @@ const styles = StyleSheet.create({
   },
   tagText: {
     ...TYPOGRAPHY.caption,
-    fontWeight: '800',
+    fontWeight: "800",
     letterSpacing: 0.4,
   },
   chevronRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginTop: 4,
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 6,
     flex: 1,
   },

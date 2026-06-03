@@ -1,22 +1,22 @@
-import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
-import { useRoutes } from '../../../hooks/useRoutes';
-import { ROUTE_STATUS } from '../../../models/route';
-import COLORS from '../../../constants/colors';
-import { SPACING, TYPOGRAPHY } from '../../../ui/theme/spacing';
+import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { useRoutes } from "../../../hooks/useRoutes";
+import { ROUTE_STATUS } from "../../../models/route";
+import COLORS from "../../../constants/colors";
+import { SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
 import {
   Card,
   EmptyState,
   LoadingSpinner,
   Screen,
   SectionHeader,
-} from '../../../ui/components';
-import { formatDate } from '../../../utils/formatters';
+} from "../../../ui/components";
+import { formatDate } from "../../../utils/formatters";
 
 const STATUS_LABELS = {
-  [ROUTE_STATUS.PLANNED]: 'Planificada',
-  [ROUTE_STATUS.ACTIVE]: 'Activa',
-  [ROUTE_STATUS.COMPLETED]: 'Completada',
-  [ROUTE_STATUS.CANCELLED]: 'Cancelada',
+  [ROUTE_STATUS.PLANNED]: "Planificada",
+  [ROUTE_STATUS.ACTIVE]: "Activa",
+  [ROUTE_STATUS.COMPLETED]: "Completada",
+  [ROUTE_STATUS.CANCELLED]: "Cancelada",
 };
 
 function RouteCard({ route }) {
@@ -25,9 +25,7 @@ function RouteCard({ route }) {
       <Text style={styles.routeName}>{route.name}</Text>
       <Text style={styles.routeMeta}>
         {STATUS_LABELS[route.status] ?? route.status}
-        {route.scheduled_date
-          ? ` · ${formatDate(route.scheduled_date)}`
-          : ''}
+        {route.scheduled_date ? ` · ${formatDate(route.scheduled_date)}` : ""}
       </Text>
       {route.estimated_distance_km != null ? (
         <Text style={styles.routeDist}>
@@ -110,6 +108,6 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.caption,
     color: COLORS.textMuted,
     marginTop: SPACING.sm,
-    fontStyle: 'italic',
+    fontStyle: "italic",
   },
 });

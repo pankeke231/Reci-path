@@ -1,20 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import COLORS from '../constants/colors';
+import { StyleSheet, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import COLORS from "../constants/colors";
 
 export default function GestionResponsableSection() {
   return (
     <View style={styles.section}>
       <LinearGradient
-        colors={['#0D2818', '#0B1120']}
+        colors={["#0D2818", "#0B1120"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={styles.gestionCard}
       >
         <Text style={styles.gestionLabel}>SOSTENIBILIDAD</Text>
         <Text style={styles.gestionTitle}>
-          Hacia una Gestión{'\n'}
+          Hacia una Gestión{"\n"}
           <Text style={styles.gestionHighlight}>Responsable</Text>
         </Text>
         <Text style={styles.gestionSubtitle}>
@@ -71,19 +71,19 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     padding: 24,
     borderWidth: 1,
-    borderColor: 'rgba(52, 211, 153, 0.15)',
+    borderColor: "rgba(52, 211, 153, 0.15)",
   },
   gestionLabel: {
     color: COLORS.green,
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: "700",
     letterSpacing: 2,
     marginBottom: 8,
   },
   gestionTitle: {
     color: COLORS.white,
     fontSize: 24,
-    fontWeight: '800',
+    fontWeight: "800",
     lineHeight: 32,
     marginBottom: 12,
   },
@@ -97,16 +97,16 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   gestionItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 20,
   },
   gestionItemIcon: {
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: 'rgba(52, 211, 153, 0.1)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "rgba(52, 211, 153, 0.1)",
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 14,
   },
   gestionItemContent: {
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   gestionItemTitle: {
     color: COLORS.white,
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: "700",
     marginBottom: 4,
   },
   gestionItemDesc: {

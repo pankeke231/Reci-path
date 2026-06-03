@@ -1,16 +1,22 @@
-import { useEffect, useState } from 'react';
-import { Alert, StyleSheet, Text, View, Pressable } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../../../hooks/useAuth';
-import { useProfile } from '../../../hooks/useProfile';
-import { getProfileDisplayName } from '../../../models/user';
-import { ROLE_LABELS } from '../../../constants/roles';
-import COLORS from '../../../constants/colors';
-import { SPACING, TYPOGRAPHY, RADIUS } from '../../../ui/theme/spacing';
-import { Button, Card, Input, Screen, SectionHeader } from '../../../ui/components';
-import { getErrorMessage } from '../../../utils/errors';
-import { isValidCellPhone } from '../../../utils/validators';
+import { useEffect, useState } from "react";
+import { Alert, StyleSheet, Text, View, Pressable } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../../../hooks/useAuth";
+import { useProfile } from "../../../hooks/useProfile";
+import { getProfileDisplayName } from "../../../models/user";
+import { ROLE_LABELS } from "../../../constants/roles";
+import COLORS from "../../../constants/colors";
+import { SPACING, TYPOGRAPHY, RADIUS } from "../../../ui/theme/spacing";
+import {
+  Button,
+  Card,
+  Input,
+  Screen,
+  SectionHeader,
+} from "../../../ui/components";
+import { getErrorMessage } from "../../../utils/errors";
+import { isValidCellPhone } from "../../../utils/validators";
 
 function ProfileHeader({ onBack }) {
   return (
@@ -26,21 +32,26 @@ export default function ProfileScreen() {
   const navigation = useNavigation();
   const { signOut } = useAuth();
   const { profile, updateProfile, loading } = useProfile();
-  const [firstNames, setFirstNames] = useState(profile?.first_names ?? '');
-  const [lastNames, setLastNames] = useState(profile?.last_names ?? '');
-  const [address, setAddress] = useState(profile?.address ?? '');
-  const [phone, setPhone] = useState(profile?.phone ?? '');
+  const [firstNames, setFirstNames] = useState(profile?.first_names ?? "");
+  const [lastNames, setLastNames] = useState(profile?.last_names ?? "");
+  const [address, setAddress] = useState(profile?.address ?? "");
+  const [phone, setPhone] = useState(profile?.phone ?? "");
 
   useEffect(() => {
-    setFirstNames(profile?.first_names ?? '');
-    setLastNames(profile?.last_names ?? '');
-    setAddress(profile?.address ?? '');
-    setPhone(profile?.phone ?? '');
-  }, [profile?.first_names, profile?.last_names, profile?.address, profile?.phone]);
+    setFirstNames(profile?.first_names ?? "");
+    setLastNames(profile?.last_names ?? "");
+    setAddress(profile?.address ?? "");
+    setPhone(profile?.phone ?? "");
+  }, [
+    profile?.first_names,
+    profile?.last_names,
+    profile?.address,
+    profile?.phone,
+  ]);
 
   const handleSave = async () => {
     if (!isValidCellPhone(phone)) {
-      Alert.alert('Validación', 'Ingresa un número de celular válido');
+      Alert.alert("Validación", "Ingresa un número de celular válido");
       return;
     }
     try {
@@ -53,16 +64,19 @@ export default function ProfileScreen() {
         address: address.trim() || null,
         phone: phone.trim(),
       });
-      Alert.alert('Perfil actualizado', 'Tus datos se guardaron correctamente.');
+      Alert.alert(
+        "Perfil actualizado",
+        "Tus datos se guardaron correctamente.",
+      );
     } catch (error) {
-      Alert.alert('Error', getErrorMessage(error));
+      Alert.alert("Error", getErrorMessage(error));
     }
   };
 
   const handleSignOut = () => {
-    Alert.alert('Cerrar sesión', '¿Deseas salir de la aplicación?', [
-      { text: 'Cancelar', style: 'cancel' },
-      { text: 'Salir', style: 'destructive', onPress: signOut },
+    Alert.alert("Cerrar sesión", "¿Deseas salir de la aplicación?", [
+      { text: "Cancelar", style: "cancel" },
+      { text: "Salir", style: "destructive", onPress: signOut },
     ]);
   };
 
@@ -75,7 +89,7 @@ export default function ProfileScreen() {
         <Ionicons name="person" size={40} color={COLORS.green} />
       </View>
       <Text style={styles.displayName}>
-        {getProfileDisplayName(profile) || 'Usuario'}
+        {getProfileDisplayName(profile) || "Usuario"}
       </Text>
       <Text style={styles.role}>
         {ROLE_LABELS[profile?.role] ?? profile?.role}
@@ -84,7 +98,7 @@ export default function ProfileScreen() {
       <Card>
         <Input
           label="Nº de identidad"
-          value={profile?.document_id ?? ''}
+          value={profile?.document_id ?? ""}
           editable={false}
           style={styles.readOnly}
         />
@@ -113,11 +127,15 @@ export default function ProfileScreen() {
         />
         <Input
           label="Correo electrónico"
-          value={profile?.email ?? ''}
+          value={profile?.email ?? ""}
           editable={false}
           style={styles.readOnly}
         />
-        <Button title="Guardar cambios" onPress={handleSave} loading={loading} />
+        <Button
+          title="Guardar cambios"
+          onPress={handleSave}
+          loading={loading}
+        />
       </Card>
 
       <Button
@@ -138,8 +156,8 @@ const styles = StyleSheet.create({
   backBtn: {
     width: 40,
     height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatar: {
     width: 80,
@@ -148,20 +166,20 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.cardBg,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
     marginBottom: SPACING.md,
   },
   displayName: {
     ...TYPOGRAPHY.h3,
     color: COLORS.textPrimary,
-    textAlign: 'center',
+    textAlign: "center",
   },
   role: {
     ...TYPOGRAPHY.label,
     color: COLORS.green,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: SPACING.xs,
     marginBottom: SPACING.lg,
   },
