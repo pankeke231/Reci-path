@@ -21,9 +21,6 @@ function getEphemeralClient() {
 }
 
 export const adminService = {
-  /**
-   * Lista recolectores registrados.
-   */
   async listCollectors() {
     const { data, error } = await supabase
       .from(TABLES.PROFILES)
@@ -36,7 +33,8 @@ export const adminService = {
   },
 
   /**
-   * Registra un recolector sin cerrar la sesión del administrador.
+   * Paso 1: crea el usuario en auth.users y el perfil básico en profiles.
+   * No incluye datos de vehículo.
    */
   async registerCollector({
     email,
@@ -46,58 +44,80 @@ export const adminService = {
     lastNames,
     address,
     phone,
-    vehicleType,
-    licensePlate,
   }) {
     const document_id = normalizeDocumentId(documentId);
     const first_names = firstNames.trim();
     const last_names = lastNames.trim();
-    const full_name = `${first_names} ${last_names}`.trim();
+    const full_name = `${first_names} ${lastNames}`.trim();
     const ephemeral = getEphemeralClient();
 
-    const { data, error } = await ephemeral.auth.signUp({
-      email: email.trim().toLowerCase(),
-      password,
-      options: {
-        data: {
-          document_id,
-          first_names,
-          last_names,
-          full_name,
-          address: address.trim(),
-          phone: phone.trim(),
-          role: ROLES.COLLECTOR,
-          vehicle_type: vehicleType?.trim() || null,
-          license_plate: licensePlate?.trim() || null,
-        },
-      },
-    });
-    if (error) throw error;
+    let userId: string | undefined;
+    let sessionError: string | null = null;
 
-    if (data.user) {
+    const { data: signUpData, error: signUpError } =
+      await ephemeral.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+        options: {
+          data: {
+            document_id,
+            first_names,
+            last_names,
+            full_name,
+            address: address.trim(),
+            phone: phone.trim(),
+            role: ROLES.COLLECTOR,
+          },
+        },
+      });
+
+    if (signUpError) {
+      sessionError = signUpError.message;
+      if (
+        signUpError.message?.includes("already registered") ||
+        signUpError.status === 422
+      ) {
+        const { data: existingUser, error: fetchError } =
+          await ephemeral.auth.admin.getUserByEmail(
+            email.trim().toLowerCase(),
+          );
+        if (fetchError || !existingUser?.user) {
+          throw new Error(
+            `El correo ya está registrado y no se pudo recuperar: ${fetchError?.message}`,
+          );
+        }
+        userId = existingUser.user.id;
+      } else {
+        throw signUpError;
+      }
+    } else {
+      userId = signUpData.user?.id;
+    }
+
+    if (userId) {
       const { error: profileError } = await supabase
         .from(TABLES.PROFILES)
-        .upsert({
-          id: data.user.id,
-          email: email.trim().toLowerCase(),
-          document_id,
-          first_names,
-          last_names,
-          full_name,
-          address: address.trim(),
-          phone: phone.trim(),
-          role: ROLES.COLLECTOR,
-          vehicle_type: vehicleType?.trim() || null,
-          license_plate: licensePlate?.trim() || null,
-          account_status: "active",
-          updated_at: new Date().toISOString(),
-        });
+        .upsert(
+          {
+            id: userId,
+            email: email.trim().toLowerCase(),
+            document_id,
+            first_names,
+            last_names,
+            full_name,
+            address: address.trim(),
+            phone: phone.trim(),
+            role: ROLES.COLLECTOR,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "id" },
+        );
 
       if (profileError) throw profileError;
     }
 
     return createUserProfile({
-      id: data.user?.id,
+      id: userId,
       email,
       document_id,
       first_names,
@@ -105,11 +125,28 @@ export const adminService = {
       full_name,
       address,
       phone,
-      vehicle_type: vehicleType?.trim() || null,
-      license_plate: licensePlate?.trim() || null,
       role: ROLES.COLLECTOR,
-      account_status: "active",
     });
+  },
+
+  /**
+   * Paso 2: guarda los datos del vehículo en la tabla vehicles.
+   */
+  async registerVehicle(collectorId, vehicleData) {
+    const { data, error } = await supabase
+      .from(TABLES.VEHICLES)
+      .insert({
+        collector_id: collectorId,
+        placa: vehicleData.plate,
+        tipo_vehiculo: vehicleData.vehicleType,
+        capacidad_toneladas: vehicleData.capacity ?? null,
+        modelo_name: vehicleData.brandModel || null,
+      })
+      .select("*")
+      .single();
+
+    if (error) throw error;
+    return data;
   },
 
   /**
@@ -130,5 +167,36 @@ export const adminService = {
 
     if (error) throw error;
     return createUserProfile(data);
+  },
+
+  async updateVehicle(collectorId, vehicleData) {
+    const { data, error } = await supabase
+      .from(TABLES.VEHICLES)
+      .upsert(
+        {
+          collector_id: collectorId,
+          placa: vehicleData.plate,
+          tipo_vehiculo: vehicleData.vehicleType,
+          capacidad_toneladas: vehicleData.capacity ?? null,
+          modelo_name: vehicleData.brandModel || null,
+        },
+        { onConflict: "collector_id" },
+      )
+      .select("*")
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async getVehicle(collectorId) {
+    const { data, error } = await supabase
+      .from(TABLES.VEHICLES)
+      .select("*")
+      .eq("collector_id", collectorId)
+      .single();
+
+    if (error) return null;
+    return data;
   },
 };

@@ -9,7 +9,6 @@ import { adminService } from "../../../services/adminService";
 import { getErrorMessage } from "../../../utils/errors";
 import { isValidCellPhone } from "../../../utils/validators";
 import AdminTopBar from "../components/AdminTopBar";
-import { ACCOUNT_STATUS } from "../constants";
 
 export default function CollectorEditScreen() {
   const navigation = useNavigation();
@@ -27,7 +26,7 @@ export default function CollectorEditScreen() {
   const [phone, setPhone] = useState("");
   const [vehicleType, setVehicleType] = useState("");
   const [licensePlate, setLicensePlate] = useState("");
-  const [status, setStatus] = useState(ACCOUNT_STATUS.ACTIVE);
+  const [vehicleLoading, setVehicleLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -36,11 +35,24 @@ export default function CollectorEditScreen() {
       setLastNames(collector.last_names ?? "");
       setAddress(collector.address ?? "");
       setPhone(collector.phone ?? "");
-      setVehicleType(collector.vehicle_type ?? "");
-      setLicensePlate(collector.license_plate ?? "");
-      setStatus(collector.account_status ?? ACCOUNT_STATUS.ACTIVE);
+      loadVehicle(collector.id);
     }
   }, [collector]);
+
+  const loadVehicle = async (collectorId) => {
+    setVehicleLoading(true);
+    try {
+      const vehicle = await adminService.getVehicle(collectorId);
+      if (vehicle) {
+        setVehicleType(vehicle.tipo_vehiculo ?? "");
+        setLicensePlate(vehicle.placa ?? "");
+      }
+    } catch (error) {
+      // Si no existe vehículo aún, ignorar
+    } finally {
+      setVehicleLoading(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!collector) return;
@@ -57,9 +69,10 @@ export default function CollectorEditScreen() {
         full_name: `${firstNames.trim()} ${lastNames.trim()}`.trim(),
         address: address.trim(),
         phone: phone.trim(),
-        vehicle_type: vehicleType?.trim() || null,
-        license_plate: licensePlate?.trim() || null,
-        account_status: status,
+      });
+      await adminService.updateVehicle(collector.id, {
+        plate: licensePlate.trim(),
+        vehicleType,
       });
       await fetchCollectors();
       Alert.alert("Actualizado", "Datos del recolector guardados.", [
@@ -123,19 +136,6 @@ export default function CollectorEditScreen() {
           autoCapitalize="characters"
         />
 
-        <Text style={styles.statusLabel}>ESTADO DE CUENTA</Text>
-        <View style={styles.statusRow}>
-          {[ACCOUNT_STATUS.ACTIVE, ACCOUNT_STATUS.PENDING].map((s) => (
-            <Button
-              key={s}
-              title={s === ACCOUNT_STATUS.ACTIVE ? "Activo" : "Pendiente"}
-              variant={status === s ? "primary" : "secondary"}
-              onPress={() => setStatus(s)}
-              style={styles.statusBtn}
-            />
-          ))}
-        </View>
-
         <Button
           title="Guardar cambios"
           onPress={handleSave}
@@ -156,20 +156,6 @@ const styles = StyleSheet.create({
     color: COLORS.textPrimary,
     marginBottom: SPACING.lg,
     marginTop: SPACING.sm,
-  },
-  statusLabel: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.textSecondary,
-    fontWeight: "700",
-    marginBottom: SPACING.sm,
-  },
-  statusRow: {
-    flexDirection: "row",
-    gap: SPACING.sm,
-    marginBottom: SPACING.lg,
-  },
-  statusBtn: {
-    flex: 1,
   },
   missing: {
     padding: SPACING.lg,

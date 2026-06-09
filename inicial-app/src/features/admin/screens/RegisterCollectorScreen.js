@@ -41,12 +41,10 @@ export default function RegisterCollectorScreen() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [vehicleType, setVehicleType] = useState("");
-  const [licensePlate, setLicensePlate] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleRegister = async () => {
+  const handleNext = () => {
     if (!isValidDocumentId(documentId)) {
       Alert.alert("Validación", "Nº de identidad inválido");
       return;
@@ -72,29 +70,15 @@ export default function RegisterCollectorScreen() {
       return;
     }
 
-    setLoading(true);
-    try {
-      await adminService.registerCollector({
-        documentId,
-        firstNames,
-        lastNames,
-        address,
-        phone,
-        email,
-        password,
-        vehicleType,
-        licensePlate,
-      });
-      Alert.alert(
-        "Recolector registrado",
-        "El usuario fue creado correctamente.",
-        [{ text: "OK", onPress: () => navigation.goBack() }],
-      );
-    } catch (error) {
-      Alert.alert("Error", getErrorMessage(error));
-    } finally {
-      setLoading(false);
-    }
+    navigation.navigate("RegisterVehicle", {
+      documentId,
+      firstNames,
+      lastNames,
+      address,
+      phone,
+      email,
+      password,
+    });
   };
 
   return (
@@ -202,27 +186,8 @@ export default function RegisterCollectorScreen() {
             </Pressable>
           </View>
         </Field>
-        <Field label="TIPO DE VEHÍCULO">
-          <TextInput
-            style={styles.input}
-            value={vehicleType}
-            onChangeText={setVehicleType}
-            placeholder="Ej: Moto, Camión, Bicicleta"
-            placeholderTextColor={COLORS.textMuted}
-          />
-        </Field>
-        <Field label="PLACA">
-          <TextInput
-            style={styles.input}
-            value={licensePlate}
-            onChangeText={setLicensePlate}
-            placeholder="Ej: ABC123"
-            placeholderTextColor={COLORS.textMuted}
-            autoCapitalize="characters"
-          />
-        </Field>
 
-        <Pressable onPress={handleRegister} disabled={loading}>
+        <Pressable onPress={handleNext} disabled={loading}>
           <LinearGradient
             colors={[COLORS.green, COLORS.greenDark]}
             start={{ x: 0, y: 0 }}
@@ -231,7 +196,7 @@ export default function RegisterCollectorScreen() {
           >
             <Ionicons name="person-add-outline" size={20} color={COLORS.bg} />
             <Text style={styles.submitText}>
-              {loading ? "Registrando…" : "Registrar"}
+              {loading ? "Registrando…" : "Siguiente"}
             </Text>
           </LinearGradient>
         </Pressable>

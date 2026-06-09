@@ -45,10 +45,7 @@ create table if not exists public.orders (
   waste_type_id text not null references public.waste_types (id),
   status text not null default 'pending'
     check (status in ('pending', 'assigned', 'in_route', 'collected', 'cancelled')),
-  quantity_kg numeric(10, 2) not null check (quantity_kg > 0),
-  notes text,
-  latitude double precision not null,
-  longitude double precision not null,
+  detalles jsonb,
   address text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

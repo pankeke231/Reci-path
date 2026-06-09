@@ -3,6 +3,7 @@ import COLORS from "../constants/colors";
 import AdminHomeScreen from "../features/admin/screens/AdminHomeScreen";
 import CollectorsListScreen from "../features/admin/screens/CollectorsListScreen";
 import RegisterCollectorScreen from "../features/admin/screens/RegisterCollectorScreen";
+import RegisterVehicleScreen from "../features/admin/screens/RegisterVehicle";
 import CollectorDetailScreen from "../features/admin/screens/CollectorDetailScreen";
 import CollectorEditScreen from "../features/admin/screens/CollectorEditScreen";
 import AdminCollectionsScreen from "../features/admin/screens/AdminCollectionsScreen";
@@ -26,6 +27,7 @@ export default function AdminNavigator() {
         name="RegisterCollector"
         component={RegisterCollectorScreen}
       />
+      <Stack.Screen name="RegisterVehicle" component={RegisterVehicleScreen} />
       <Stack.Screen name="CollectorDetail" component={CollectorDetailScreen} />
       <Stack.Screen name="CollectorEdit" component={CollectorEditScreen} />
       <Stack.Screen

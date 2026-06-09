@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   ScrollView,
   View,
@@ -12,6 +12,51 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../../hooks/useAuth";
+
+const InputField = ({
+  label,
+  icon,
+  placeholder,
+  value,
+  onChangeText,
+  keyboardType = "default",
+  secureTextEntry = false,
+  autoCapitalize = "sentences",
+  showPassword,
+  onTogglePassword,
+}) => (
+  <View style={styles.fieldContainer}>
+    <Text style={styles.label}>{label}</Text>
+
+    <View style={styles.inputContainer}>
+      <Ionicons name={icon} size={20} color="#64748B" style={styles.icon} />
+
+      <TextInput
+        style={styles.input}
+        placeholder={placeholder}
+        placeholderTextColor="#94A3B8"
+        value={value}
+        onChangeText={onChangeText}
+        keyboardType={keyboardType}
+        secureTextEntry={secureTextEntry}
+        autoCapitalize={autoCapitalize}
+        autoCorrect={false}
+        autoComplete="off"
+        editable={true}
+      />
+
+      {label === "CONTRASEÑA" && (
+        <TouchableOpacity onPress={onTogglePassword}>
+          <Ionicons
+            name={showPassword ? "eye-off-outline" : "eye-outline"}
+            size={20}
+            color="#64748B"
+          />
+        </TouchableOpacity>
+      )}
+    </View>
+  </View>
+);
 
 export default function RegisterScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -54,44 +99,6 @@ export default function RegisterScreen({ navigation }) {
     }
   };
 
-  const InputField = ({
-    label,
-    icon,
-    placeholder,
-    value,
-    onChangeText,
-    keyboardType = "default",
-    secureTextEntry = false,
-  }) => (
-    <View style={styles.fieldContainer}>
-      <Text style={styles.label}>{label}</Text>
-
-      <View style={styles.inputContainer}>
-        <Ionicons name={icon} size={20} color="#64748B" style={styles.icon} />
-
-        <TextInput
-          style={styles.input}
-          placeholder={placeholder}
-          placeholderTextColor="#64748B"
-          value={value}
-          onChangeText={onChangeText}
-          keyboardType={keyboardType}
-          secureTextEntry={secureTextEntry}
-        />
-
-        {label === "CONTRASEÑA" && (
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Ionicons
-              name={showPassword ? "eye-off-outline" : "eye-outline"}
-              size={20}
-              color="#64748B"
-            />
-          </TouchableOpacity>
-        )}
-      </View>
-    </View>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -124,6 +131,8 @@ export default function RegisterScreen({ navigation }) {
             placeholder="Ej: 1005678901"
             value={form.document}
             onChangeText={(text) => updateField("document", text)}
+            autoCapitalize="none"
+            keyboardType="number-pad"
           />
 
           <InputField
@@ -132,6 +141,7 @@ export default function RegisterScreen({ navigation }) {
             placeholder="Tus nombres"
             value={form.names}
             onChangeText={(text) => updateField("names", text)}
+            autoCapitalize="words"
           />
 
           <InputField
@@ -140,6 +150,7 @@ export default function RegisterScreen({ navigation }) {
             placeholder="Tus apellidos"
             value={form.lastNames}
             onChangeText={(text) => updateField("lastNames", text)}
+            autoCapitalize="words"
           />
 
           <InputField
@@ -148,6 +159,7 @@ export default function RegisterScreen({ navigation }) {
             placeholder="Ej: Calle 5 #24-10"
             value={form.address}
             onChangeText={(text) => updateField("address", text)}
+            autoCapitalize="sentences"
           />
 
           <InputField
@@ -157,6 +169,7 @@ export default function RegisterScreen({ navigation }) {
             keyboardType="phone-pad"
             value={form.phone}
             onChangeText={(text) => updateField("phone", text)}
+            autoCapitalize="none"
           />
 
           <InputField
@@ -166,6 +179,7 @@ export default function RegisterScreen({ navigation }) {
             keyboardType="email-address"
             value={form.email}
             onChangeText={(text) => updateField("email", text)}
+            autoCapitalize="none"
           />
 
           <InputField
@@ -175,6 +189,9 @@ export default function RegisterScreen({ navigation }) {
             secureTextEntry={!showPassword}
             value={form.password}
             onChangeText={(text) => updateField("password", text)}
+            autoCapitalize="none"
+            showPassword={showPassword}
+            onTogglePassword={() => setShowPassword(!showPassword)}
           />
 
           <TouchableOpacity

@@ -11,7 +11,7 @@ export default function AdminTopBar({ onBack, rightIcon, onRightPress }) {
       </Pressable>
       <View style={styles.brand}>
         <Ionicons name="leaf" size={18} color={COLORS.green} />
-        <Text style={styles.brandText}>S.E.A</Text>
+        <Text style={styles.brandText}>Reci-path</Text>
       </View>
       <Pressable onPress={onRightPress} style={styles.sideBtn}>
         <Ionicons

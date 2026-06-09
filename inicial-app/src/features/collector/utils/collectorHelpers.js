@@ -5,7 +5,6 @@ import {
 } from "../../admin/utils/collectionHelpers";
 import {
   formatHistorySchedule,
-  getCollectionAddress,
   getPickupDisplayDate,
   parseOrderNotes,
 } from "../../citizen/utils/orderHelpers";
@@ -58,7 +57,6 @@ export function getNextStop(orders) {
   if (!next) return null;
 
   return {
-    address: getCollectionAddress(next),
     time: formatHistorySchedule(getPickupDisplayDate(next)),
   };
 }
