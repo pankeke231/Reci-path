@@ -103,7 +103,7 @@ export default function CollectorsListScreen() {
         </Pressable>
 
         <View>
-          <Text style={styles.logo}>Reci-path</Text>
+          <Text style={styles.logo}>ReciPath</Text>
           <Text style={styles.subtitle}>Administración de Usuarios</Text>
         </View>
       </View>

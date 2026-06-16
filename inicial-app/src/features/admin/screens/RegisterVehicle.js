@@ -100,7 +100,7 @@ export default function RegisterVehicleScreen() {
 
         <View style={styles.logoContainer}>
           <MaterialCommunityIcons name="leaf" size={22} color="#2ECC71" />
-          <Text style={styles.logoText}>Reci-path</Text>
+          <Text style={styles.logoText}>ReciPath</Text>
         </View>
 
         <View style={{ width: 40 }} />
