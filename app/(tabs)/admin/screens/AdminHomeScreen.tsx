@@ -109,13 +109,11 @@ export default function AdminHomeScreen() {
       <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navButton} onPress={handleProfile}>
           <Ionicons name="person-outline" size={22} color="#94A3B8" />
-
           <Text style={styles.navText}>Perfil</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navButton} onPress={handleLogout}>
           <Ionicons name="log-out-outline" size={22} color="#94A3B8" />
-
           <Text style={styles.navText}>Cerrar sesión</Text>
         </TouchableOpacity>
       </View>

@@ -6,7 +6,6 @@ import {
 import {
   formatHistorySchedule,
   getPickupDisplayDate,
-  parseOrderNotes,
 } from "./orderHelpers";
 import { formatDate } from "./formatters";
 import { getProfileDisplayName } from "../models/user";
@@ -85,15 +84,12 @@ export function getCitizenName(order: CollectionOrder, citizen: UserProfile | nu
  * @param {string|null|undefined} notes
  */
 export function parseCollectorResponse(notes: string | null | undefined): { response: string; description: string; pickupDate: string | null } {
-  let raw = notes ?? "";
-  const responseMatch = raw.match(/\[RESPONSE\]:([^\n]*)/);
+  const responseMatch = (notes ?? "").match(/\[RESPONSE\]:([^\n]*)/);
   const response = responseMatch?.[1]?.trim() ?? "";
-  raw = raw.replace(/\[RESPONSE\]:[^\n]*\n?/, "");
-  const parsed = parseOrderNotes(raw);
   return {
     response,
-    description: parsed.description,
-    pickupDate: parsed.pickupDate,
+    description: "",
+    pickupDate: null,
   };
 }
 
@@ -105,7 +101,6 @@ export function formatPickupDateDisplay(pickupDate: string | null, fallback: str
 }
 
 export function buildResponseNotes(existingNotes: string | null | undefined, responseText: string): string {
-  const { description } = parseOrderNotes(existingNotes);
   const responseLine = `[RESPONSE]:${responseText.trim()}`;
-  return description ? `${responseLine}\n${description}` : responseLine;
+  return responseLine;
 }

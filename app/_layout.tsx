@@ -7,6 +7,7 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import "react-native-reanimated";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useAuth } from "@/hooks/useAuth";
@@ -38,11 +39,15 @@ function NavigationGate() {
     const inRoleApp = routeGroup === "(tabs)";
 
     if (isAuthenticated && (inAuth || inOnboarding)) {
-      router.replace("/home");
+      router.replace("/(tabs)/home");
     } else if (!isAuthenticated && inOnboarding && onboardingCompleted) {
       router.replace("/(auth)/auth");
     } else if (!isAuthenticated && inRoleApp) {
-      router.replace("/(onboarding)/index");
+      router.replace(
+        onboardingCompleted
+          ? "/(auth)/auth"
+          : "/(onboarding)/index",
+      );
     }
   }, [
     initializing,
@@ -60,7 +65,7 @@ function RootNavigator() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
+      <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(onboarding)/index" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)/auth" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -73,8 +78,10 @@ function RootNavigator() {
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <RootNavigator />
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <RootNavigator />
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }

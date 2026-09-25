@@ -1,7 +1,8 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Onboarding, { DoneButtonProps, DotProps, NextButtonProps } from 'react-native-onboarding-swiper';
 import { completeOnboarding } from '@/lib/onboardingStorage';
 
@@ -29,7 +30,7 @@ export default function OnboardingScreen() {
     router.replace('/(auth)/auth');
   };
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe} edges={['top', 'left', 'right', 'bottom']}>
       <View style={styles.header}>
         <View style={styles.brand}><MaterialCommunityIcons name="recycle" size={20} color={green} /><Text style={styles.brandText}>ReciPath <Text style={styles.brandAccent}>| Cali-circular</Text></Text></View>
         <Pressable onPress={finish}><Text style={styles.skip}>OMITIR</Text></Pressable>

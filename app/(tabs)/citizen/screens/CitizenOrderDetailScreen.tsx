@@ -15,8 +15,9 @@ import {
   getPickupDisplayDate,
   getRecyclerLabel,
   getWasteLabel,
-  parseOrderNotes,
+  parseOrderDetails,
 } from "../../../../utils/orderHelpers";
+import { parseCollectorResponse } from "../../../../utils/collectorHelpers";
 import type { ReactNode } from "react";
 
 function InfoCell({ label, value }: { label: string; value: string | number | null }) {
@@ -54,7 +55,7 @@ export default function CitizenOrderDetailScreen() {
     );
   }
 
-  const { pickupDate, description } = parseOrderNotes(order.notes);
+  const { pickupDate, description } = parseOrderDetails(order.detalles);
   const pickupDisplay = pickupDate
     ? formatDate(
         /^\d{4}-\d{2}-\d{2}$/.test(pickupDate)
@@ -65,7 +66,7 @@ export default function CitizenOrderDetailScreen() {
 
   const isCollected = order.status === ORDER_STATUS.COLLECTED;
   const recyclerResponse = isCollected
-    ? `"Recolección exitosa. Gracias por separar tus residuos correctamente."`
+    ? parseCollectorResponse(order.notes).response
     : null;
 
   return (
@@ -109,7 +110,9 @@ export default function CitizenOrderDetailScreen() {
         {isCollected ? (
           <View style={styles.responseCard}>
             <Text style={styles.responseTitle}>RESPUESTA DEL RECICLADOR</Text>
-            <Text style={styles.responseQuote}>{recyclerResponse}</Text>
+            <Text style={styles.responseQuote}>
+              {recyclerResponse || "El reciclador no dejó un mensaje."}
+            </Text>
             <View style={styles.recyclerRow}>
               <View style={styles.recyclerAvatar}>
                 <Ionicons name="person" size={18} color={COLORS.green} />

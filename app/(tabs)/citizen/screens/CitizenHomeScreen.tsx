@@ -143,13 +143,11 @@ export default function CitizenHomeScreen() {
           onPress={() => navigation.navigate("CitizenProfile")}
         >
           <Ionicons name="person-outline" size={22} color="#94A3B8" />
-
           <Text style={styles.navText}>Perfil</Text>
         </Pressable>
 
         <Pressable style={styles.navButton} onPress={handleSignOut}>
           <Ionicons name="log-out-outline" size={22} color="#94A3B8" />
-
           <Text style={styles.navText}>Cerrar sesión</Text>
         </Pressable>
       </View>
@@ -338,13 +336,10 @@ const styles = StyleSheet.create({
   bottomNav: {
     flexDirection: "row",
     justifyContent: "space-around",
-
     paddingTop: 16,
     paddingBottom: 30,
-
     borderTopWidth: 1,
     borderTopColor: "#1E293B",
-
     backgroundColor: "#111827",
   },
 

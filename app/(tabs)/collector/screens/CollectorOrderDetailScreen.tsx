@@ -31,6 +31,7 @@ import {
   getCitizenUsername,
   parseCollectorResponse,
 } from "../../../../utils/collectorHelpers";
+import { parseOrderDetails } from "../../../../utils/orderHelpers";
 
 interface InfoBlockProps {
   label: string;
@@ -88,7 +89,7 @@ export default function CollectorOrderDetailScreen() {
   }
 
   const tag = getWasteTagStyle(order);
-  const { pickupDate, description } = parseCollectorResponse(order.notes);
+  const { pickupDate, description } = parseOrderDetails(order.detalles);
   const isCompleted = order.status === ORDER_STATUS.COLLECTED;
 
   const handleSubmitResponse = async () => {

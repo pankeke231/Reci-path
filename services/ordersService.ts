@@ -90,19 +90,13 @@ export const ordersService = {
     orderId: string,
     collectorId: string,
     responseText: string,
-    existingNotes: string | null,
+    _existingNotes: string | null,
   ) {
     const responseLine = `[RESPONSE]:${responseText.trim()}`;
-    let notes = existingNotes ?? "";
-    if (notes.includes("[RESPONSE]:")) {
-      notes = notes.replace(/\[RESPONSE\]:[^\n]*/, responseLine);
-    } else {
-      notes = notes ? `${responseLine}\n${notes}` : responseLine;
-    }
 
     return this.updateByCollector(orderId, collectorId, {
       status: ORDER_STATUS.COLLECTED,
-      notes: notes.trim() || null,
+      notes: responseLine,
     });
   },
 

@@ -25,12 +25,27 @@ export function parseOrderNotes(notes: string | null | undefined): { pickupDate:
     if (lineBreak === -1) {
       return { pickupDate: rest.trim(), description: "" };
     }
+
     return {
       pickupDate: rest.slice(0, lineBreak).trim(),
       description: rest.slice(lineBreak + 1).trim(),
     };
   }
   return { pickupDate: null, description: notes };
+}
+
+export function parseOrderDetails(
+  detalles: Record<string, unknown> | null | undefined,
+): { pickupDate: string | null; description: string } {
+  if (!detalles) return { pickupDate: null, description: "" };
+
+  const pickupDate = detalles.pickup_date;
+  const description = detalles.description;
+
+  return {
+    pickupDate: typeof pickupDate === "string" ? pickupDate : null,
+    description: typeof description === "string" ? description : "",
+  };
 }
 
 /**
@@ -137,7 +152,7 @@ export function getWasteLabel(order: CollectionOrder): string {
  * @param {import('../../../models/order').CollectionOrder} order
  */
 export function getPickupDisplayDate(order: CollectionOrder): string | Date {
-  const { pickupDate } = parseOrderNotes(order.notes);
+  const { pickupDate } = parseOrderDetails(order.detalles);
   if (pickupDate) {
     if (/^\d{4}-\d{2}-\d{2}$/.test(pickupDate)) {
       const [y, m, d] = pickupDate.split("-").map(Number);

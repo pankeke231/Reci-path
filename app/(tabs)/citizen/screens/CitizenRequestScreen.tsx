@@ -127,7 +127,7 @@ export default function CitizenRequestScreen() {
   };
 
   return (
-    <Screen scroll padded={false}>
+    <Screen padded={false}>
       <View style={styles.topBar}>
         <Pressable onPress={() => navigation.goBack()} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={22} color={COLORS.textPrimary} />
@@ -140,6 +140,7 @@ export default function CitizenRequestScreen() {
       </View>
 
       <ScrollView
+        style={styles.flex}
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -265,6 +266,9 @@ export default function CitizenRequestScreen() {
 }
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
   topBar: {
     flexDirection: "row",
     alignItems: "center",

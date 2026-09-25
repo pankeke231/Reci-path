@@ -21,6 +21,7 @@ import {
   getCitizenUsername,
   parseCollectorResponse,
 } from "../../../../utils/collectorHelpers";
+import { parseOrderDetails } from "../../../../utils/orderHelpers";
 
 function InfoBlock({ label, value, children }: { label: string; value?: string | number | null; children?: ReactNode }) {
   return (
@@ -62,7 +63,7 @@ export default function AdminOrderDetailScreen() {
   }
 
   const tag = getWasteTagStyle(order);
-  const { pickupDate, description } = parseCollectorResponse(order.notes);
+  const { pickupDate, description } = parseOrderDetails(order.detalles);
   const isCompleted = order.status === ORDER_STATUS.COLLECTED;
   const { response } = parseCollectorResponse(order.notes);
 

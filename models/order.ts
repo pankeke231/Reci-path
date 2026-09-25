@@ -44,6 +44,7 @@ export function createOrder(data: Partial<CollectionOrder> = {}): CollectionOrde
     address: data.address ?? null,
     created_at: data.created_at ?? new Date().toISOString(),
     updated_at: data.updated_at ?? new Date().toISOString(),
+    notes: data.notes ?? null,
     waste_types: data.waste_types,
     profiles: data.profiles,
   };

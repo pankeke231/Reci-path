@@ -18,6 +18,7 @@ export default function TabsLayout() {
         name="home"
         options={{
           title: 'Inicio',
+          tabBarStyle: { display: 'none' },
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home-outline" color={color} size={size} />
           ),

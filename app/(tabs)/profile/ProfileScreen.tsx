@@ -16,7 +16,10 @@ import {
   SectionHeader,
 } from "../../../ui/components";
 import { getErrorMessage } from "../../../utils/errors";
-import { isValidCellPhone } from "../../../utils/validators";
+import {
+  isValidCellPhone,
+  normalizeDocumentId,
+} from "../../../utils/validators";
 
 function ProfileHeader({ onBack }: { onBack: () => void }) {
   return (
@@ -32,17 +35,20 @@ export default function ProfileScreen() {
   const navigation = useNavigation();
   const { signOut } = useAuth();
   const { profile, updateProfile, loading } = useProfile();
+  const [document_id, setDocumentId] = useState(profile?.document_id ?? "");
   const [firstNames, setFirstNames] = useState(profile?.first_names ?? "");
   const [lastNames, setLastNames] = useState(profile?.last_names ?? "");
   const [address, setAddress] = useState(profile?.address ?? "");
   const [phone, setPhone] = useState(profile?.phone ?? "");
 
   useEffect(() => {
+    setDocumentId(profile?.document_id ?? "");
     setFirstNames(profile?.first_names ?? "");
     setLastNames(profile?.last_names ?? "");
     setAddress(profile?.address ?? "");
     setPhone(profile?.phone ?? "");
   }, [
+    profile?.document_id,
     profile?.first_names,
     profile?.last_names,
     profile?.address,
@@ -58,6 +64,7 @@ export default function ProfileScreen() {
       const first_names = firstNames.trim();
       const last_names = lastNames.trim();
       await updateProfile({
+        document_id: normalizeDocumentId(document_id),
         first_names,
         last_names,
         full_name: `${first_names} ${last_names}`.trim(),
@@ -98,9 +105,10 @@ export default function ProfileScreen() {
       <Card>
         <Input
           label="Nº de identidad"
-          value={profile?.document_id ?? ""}
-          editable={false}
+          value={document_id}
+          onChangeText={setDocumentId}
           style={styles.readOnly}
+          keyboardType="default"
         />
         <Input
           label="Nombres completos"
