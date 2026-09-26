@@ -10,12 +10,23 @@ type CollectorInput = {
   email: string; password: string; documentId: string; firstNames: string;
   lastNames: string; address: string; phone: string;
 };
-type VehicleInput = { plate: string; vehicleType: string; capacity?: number; brandModel?: string };
+type VehicleInput = {
+  plate: string;
+  vehicleType: string;
+  capacity?: number | null;
+  brandModel?: string | null;
+};
 
 function getEphemeralClient() {
+  if (!ENV.supabaseUrl || !ENV.supabaseApiKey) {
+    throw new Error(
+      "Falta la URL o la clave pública de Supabase. Revisa la configuración EXPO_PUBLIC_SUPABASE_*.",
+    );
+  }
+
   return createClient(
-    ENV.supabaseUrl || "https://placeholder.supabase.co",
-    ENV.supabaseAnonKey || "placeholder",
+    ENV.supabaseUrl,
+    ENV.supabaseApiKey,
     {
       auth: {
         persistSession: false,
@@ -58,7 +69,6 @@ export const adminService = {
     const ephemeral = getEphemeralClient();
 
     let userId: string | undefined;
-    let sessionError: string | null = null;
 
     const { data: signUpData, error: signUpError } =
       await ephemeral.auth.signUp({
@@ -78,49 +88,55 @@ export const adminService = {
       });
 
     if (signUpError) {
-      sessionError = signUpError.message;
-      if (
-        signUpError.message?.includes("already registered") ||
-        signUpError.status === 422
-      ) {
-        const { data: existingUser, error: fetchError } =
-          await ephemeral.auth.admin.getUserByEmail(
-            email.trim().toLowerCase(),
-          );
-        if (fetchError || !existingUser?.user) {
-          throw new Error(
-            `El correo ya está registrado y no se pudo recuperar: ${fetchError?.message}`,
-          );
-        }
-        userId = existingUser.user.id;
-      } else {
+      if (!signUpError.message.toLowerCase().includes("already registered")) {
         throw signUpError;
       }
+
+      const { data: existingProfile, error: profileLookupError } = await supabase
+        .from(TABLES.PROFILES)
+        .select("*")
+        .eq("email", email.trim().toLowerCase())
+        .eq("role", ROLES.COLLECTOR)
+        .maybeSingle();
+
+      if (profileLookupError) throw profileLookupError;
+      if (!existingProfile) {
+        throw new Error(
+          "Este correo ya tiene una cuenta, pero no encontramos su perfil de reciclador. " +
+            "No es seguro recuperar su usuario desde la app; requiere revisión desde el backend.",
+        );
+      }
+
+      return createUserProfile(existingProfile);
     } else {
       userId = signUpData.user?.id;
     }
 
-    if (userId) {
-      const { error: profileError } = await supabase
-        .from(TABLES.PROFILES)
-        .upsert(
-          {
-            id: userId,
-            email: email.trim().toLowerCase(),
-            document_id,
-            first_names,
-            last_names,
-            full_name,
-            address: address.trim(),
-            phone: phone.trim(),
-            role: ROLES.COLLECTOR,
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: "id" },
-        );
-
-      if (profileError) throw profileError;
+    if (!userId) {
+      throw new Error(
+        "Supabase no devolvió el usuario creado; no se puede completar el perfil ni registrar el vehículo.",
+      );
     }
+
+    const { error: profileError } = await supabase
+      .from(TABLES.PROFILES)
+      .upsert(
+        {
+          id: userId,
+          email: email.trim().toLowerCase(),
+          document_id,
+          first_names,
+          last_names,
+          full_name,
+          address: address.trim(),
+          phone: phone.trim(),
+          role: ROLES.COLLECTOR,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "id" },
+      );
+
+    if (profileError) throw profileError;
 
     return createUserProfile({
       id: userId,
@@ -141,13 +157,16 @@ export const adminService = {
   async registerVehicle(collectorId: string, vehicleData: VehicleInput) {
     const { data, error } = await supabase
       .from(TABLES.VEHICLES)
-      .insert({
-        collector_id: collectorId,
-        placa: vehicleData.plate,
-        tipo_vehiculo: vehicleData.vehicleType,
-        capacidad_toneladas: vehicleData.capacity ?? null,
-        modelo_name: vehicleData.brandModel || null,
-      })
+      .upsert(
+        {
+          collector_id: collectorId,
+          placa: vehicleData.plate,
+          tipo_vehiculo: vehicleData.vehicleType,
+          capacidad_toneladas: vehicleData.capacity ?? null,
+          modelo_name: vehicleData.brandModel || null,
+        },
+        { onConflict: "collector_id" },
+      )
       .select("*")
       .single();
 

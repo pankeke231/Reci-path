@@ -27,7 +27,10 @@ export default function CollectorEditScreen() {
   const [vehicleType, setVehicleType] = useState("");
   const [licensePlate, setLicensePlate] = useState("");
   const [vehicleLoading, setVehicleLoading] = useState(false);
+  const [brandModel, setBrandModel] = useState("");
+  const [capacity, setCapacity] = useState();
   const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     if (collector) {
@@ -46,6 +49,8 @@ export default function CollectorEditScreen() {
       if (vehicle) {
         setVehicleType(vehicle.tipo_vehiculo ?? "");
         setLicensePlate(vehicle.placa ?? "");
+        setBrandModel(vehicle.modelo_name ?? "");
+        setCapacity(vehicle.capacidad_toneladas ?.toString() ?? "");
       }
     } catch (error) {
       // Si no existe vehículo aún, ignorar
@@ -73,6 +78,8 @@ export default function CollectorEditScreen() {
       await adminService.updateVehicle(collector.id, {
         plate: licensePlate.trim(),
         vehicleType,
+        brandModel,
+        capacity,
       });
       await fetchCollectors();
       Alert.alert("Actualizado", "Datos del recolector guardados.", [
@@ -135,7 +142,20 @@ export default function CollectorEditScreen() {
           placeholder="Ej: ABC-123"
           autoCapitalize="characters"
         />
-
+        <Input
+          label="Modelo"
+          value={brandModel}
+          onChangeText={setBrandModel}
+          placeholder="Ej: AKT-2021"
+          autoCapitalize="characters"
+        />
+        <Input
+          label="Capacidad en toneladas"
+          value={capacity}
+          onChangeText={setCapacity}
+          placeholder="Ej: 0.5"
+          keyboardType="decimal-pad"
+        />
         <Button
           title="Guardar cambios"
           onPress={handleSave}
