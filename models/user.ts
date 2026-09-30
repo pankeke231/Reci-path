@@ -13,6 +13,7 @@ export interface UserProfile {
   phone: string | null;
   account_status?: "active" | "pending";
   avatar_url: string | null;
+  avatar?: string | null;
   latitude: number | null;
   longitude: number | null;
   vehicle_type: string | null;
@@ -66,7 +67,8 @@ export function createUserProfile(data: Partial<UserProfile> = {}): UserProfile 
     address: data.address ?? null,
     phone: data.phone ?? null,
     account_status: data.account_status ?? "active",
-    avatar_url: data.avatar_url ?? null,
+    avatar_url: data.avatar_url ?? data.avatar ?? null,
+    avatar: data.avatar ?? data.avatar_url ?? null,
     latitude: data.latitude ?? null,
     longitude: data.longitude ?? null,
     vehicle_type: data.vehicle_type ?? null,

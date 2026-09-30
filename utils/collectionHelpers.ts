@@ -1,16 +1,17 @@
 import {
   COMPLETED_STATUSES,
   RECEIVED_STATUSES,
-  WASTE_TAG_COLORS,
 } from "../constants/admin";
 import { formatWeight } from "./formatters";
 import {
   formatHistorySchedule,
+  getOrderWasteCategories,
   getPickupDisplayDate,
   getWasteLabel,
   parseOrderNotes,
 } from "./orderHelpers";
 import type { CollectionOrder } from "../models/order";
+import { getWasteContainerColor } from "../models/waste";
 
 export function filterReceivedOrders(orders: CollectionOrder[]): CollectionOrder[] {
   return orders.filter((o) => RECEIVED_STATUSES.includes(o.status));
@@ -24,8 +25,34 @@ export function filterCompletedOrders(orders: CollectionOrder[]): CollectionOrde
  * @param {import('../../../models/order').CollectionOrder} order
  */
 export function getWasteTagStyle(order: CollectionOrder) {
-  const code = order.waste_types?.code ?? order.waste_type_id ?? "general";
-  return WASTE_TAG_COLORS[code] ?? WASTE_TAG_COLORS.general;
+  const categories = getOrderWasteCategories(order.detalles);
+  if (categories.length > 0) {
+    const labels = categories.map((category) => {
+      const categoryColor = getWasteContainerColor(category.color_code);
+      return `${categoryColor.name.toUpperCase()} - ${category.name.toUpperCase()}`;
+    });
+    const firstColor = getWasteContainerColor(categories[0].color_code);
+    return {
+      bg: `${firstColor.backgroundColor}22`,
+      text: firstColor.backgroundColor,
+      label: labels.join(" · "),
+    };
+  }
+
+  const colorCode =
+    typeof order.waste_types?.color_code === "string"
+      ? order.waste_types.color_code
+      : null;
+  const wasteName =
+    typeof order.waste_types?.name === "string"
+      ? order.waste_types.name
+      : "Residuo";
+  const color = getWasteContainerColor(colorCode);
+  return {
+    bg: `${color.backgroundColor}22`,
+    text: color.backgroundColor,
+    label: `${color.name.toUpperCase()} - ${wasteName.toUpperCase()}`,
+  };
 }
 
 /**

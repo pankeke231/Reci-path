@@ -1,8 +1,9 @@
-import { useMemo } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { Image } from "expo-image";
 import { ORDER_STATUS } from "../../../../constants/orderStatus";
 import COLORS from "../../../../constants/colors";
 import { RADIUS, SPACING, TYPOGRAPHY } from "../../../../ui/theme/spacing";
@@ -13,12 +14,14 @@ import { useOrders } from "../../../../hooks/useOrders";
 import CitizenHeader from "../components/CitizenHeader";
 import {
   getPickupDisplayDate,
+  getOrderPhotoPath,
   getRecyclerLabel,
   getWasteLabel,
   parseOrderDetails,
 } from "../../../../utils/orderHelpers";
 import { parseCollectorResponse } from "../../../../utils/collectorHelpers";
-import type { ReactNode } from "react";
+import { imageStorageService } from "../../../../services/imageStorageService";
+import { getErrorMessage } from "../../../../utils/errors";
 
 function InfoCell({ label, value }: { label: string; value: string | number | null }) {
   return (
@@ -34,12 +37,36 @@ export default function CitizenOrderDetailScreen() {
   const route = useRoute();
   const { profile } = useAuth();
   const { orders } = useOrders();
+  const [wastePhotoUrl, setWastePhotoUrl] = useState<string | null>(null);
 
   const orderId = route.params?.orderId;
   const order = useMemo(
     () => orders.find((o) => o.id === orderId),
     [orders, orderId],
   );
+
+  const wastePhotoPath = getOrderPhotoPath(order?.photos);
+
+  useEffect(() => {
+    let active = true;
+    if (!wastePhotoPath) {
+      setWastePhotoUrl(null);
+      return;
+    }
+
+    imageStorageService
+      .createSignedUrl(wastePhotoPath)
+      .then((url) => {
+        if (active) setWastePhotoUrl(url);
+      })
+      .catch((error) => {
+        if (active) Alert.alert("Error al cargar la foto", getErrorMessage(error));
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [wastePhotoPath]);
 
   if (!order) {
     return (
@@ -106,6 +133,17 @@ export default function CitizenOrderDetailScreen() {
               "Sin descripción adicional. El ciudadano registró la solicitud desde la app S.E.A."}
           </Text>
         </View>
+
+        {wastePhotoUrl ? (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>FOTO DEL RESIDUO</Text>
+            <Image
+              source={{ uri: wastePhotoUrl }}
+              style={styles.wastePhoto}
+              contentFit="cover"
+            />
+          </View>
+        ) : null}
 
         {isCollected ? (
           <View style={styles.responseCard}>
@@ -199,6 +237,12 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.body,
     color: COLORS.textSecondary,
     lineHeight: 22,
+  },
+  wastePhoto: {
+    width: "100%",
+    height: 220,
+    borderRadius: RADIUS.md,
+    marginTop: SPACING.sm,
   },
   responseCard: {
     borderWidth: 1,

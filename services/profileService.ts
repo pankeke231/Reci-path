@@ -21,7 +21,11 @@ export const profileService = {
    * @param {Partial<import('../models/user').UserProfile>} updates
    */
   async updateProfile(userId: string, updates: Partial<UserProfile>) {
-    const data = await crud.update(userId, updates);
+    const { avatar_url, ...profileUpdates } = updates;
+    const data = await crud.update(userId, {
+      ...profileUpdates,
+      ...(avatar_url !== undefined ? { avatar: avatar_url } : {}),
+    });
     return createUserProfile(data);
   },
 };

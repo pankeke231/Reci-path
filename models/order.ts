@@ -4,7 +4,7 @@ export interface CollectionOrder {
   id: string; citizen_id: string; collector_id: string | null; route_id: string | null;
   waste_type_id: string; status: string; quantity_kg: number; detalles: Record<string, unknown> | null;
   latitude: number; longitude: number; address: string | null; created_at: string; updated_at: string;
-  notes?: string | null; waste_types?: Record<string, unknown>; profiles?: Record<string, unknown>;
+  notes?: string | null; photos?: string | null; waste_types?: Record<string, unknown>; profiles?: Record<string, unknown>;
 }
 /**
  * @typedef {Object} CollectionOrder
@@ -45,6 +45,7 @@ export function createOrder(data: Partial<CollectionOrder> = {}): CollectionOrde
     created_at: data.created_at ?? new Date().toISOString(),
     updated_at: data.updated_at ?? new Date().toISOString(),
     notes: data.notes ?? null,
+    photos: data.photos ?? null,
     waste_types: data.waste_types,
     profiles: data.profiles,
   };

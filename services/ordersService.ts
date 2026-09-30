@@ -6,7 +6,8 @@ import { supabase } from "../lib/supabase";
 
 const crud = createCrudService(TABLES.ORDERS);
 
-const ORDER_SELECT = "*, waste_types ( id, name, code, icon, recyclable )";
+const ORDER_SELECT =
+  "*, waste_types ( id, name, color_code, is_active )";
 type OrderPayload = Partial<CollectionOrder> & { status?: string; notes?: string | null; collector_id?: string };
 type StatusRow = { status: string };
 

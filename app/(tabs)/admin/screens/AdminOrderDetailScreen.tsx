@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { useOrders } from "../../../../hooks/useOrders";
 import { profileService } from "../../../../services/profileService";
 import { ORDER_STATUS } from "../../../../constants/orderStatus";
@@ -21,7 +22,13 @@ import {
   getCitizenUsername,
   parseCollectorResponse,
 } from "../../../../utils/collectorHelpers";
-import { parseOrderDetails } from "../../../../utils/orderHelpers";
+import {
+  getOrderPhotoPath,
+  parseOrderDetails,
+} from "../../../../utils/orderHelpers";
+import { imageStorageService } from "../../../../services/imageStorageService";
+import { getErrorMessage } from "../../../../utils/errors";
+import type { UserProfile } from "../../../../models/user";
 
 function InfoBlock({ label, value, children }: { label: string; value?: string | number | null; children?: ReactNode }) {
   return (
@@ -36,12 +43,14 @@ export default function AdminOrderDetailScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { orders, fetchOrders } = useOrders({ autoFetch: false });
-  const [citizen, setCitizen] = useState(null);
+  const [citizen, setCitizen] = useState<UserProfile | null>(null);
+  const [wastePhotoUrl, setWastePhotoUrl] = useState<string | null>(null);
 
   const order = useMemo(
     () => orders.find((o) => o.id === route.params?.orderId),
     [orders, route.params?.orderId],
   );
+  const wastePhotoPath = getOrderPhotoPath(order?.photos);
 
   useEffect(() => {
     fetchOrders();
@@ -52,6 +61,27 @@ export default function AdminOrderDetailScreen() {
       profileService.getProfile(order.citizen_id).then(setCitizen);
     }
   }, [order?.citizen_id]);
+
+  useEffect(() => {
+    let active = true;
+    if (!wastePhotoPath) {
+      setWastePhotoUrl(null);
+      return;
+    }
+
+    imageStorageService
+      .createSignedUrl(wastePhotoPath)
+      .then((url) => {
+        if (active) setWastePhotoUrl(url);
+      })
+      .catch((error) => {
+        if (active) Alert.alert("Error al cargar la foto", getErrorMessage(error));
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [wastePhotoPath]);
 
   if (!order) {
     return (
@@ -114,6 +144,16 @@ export default function AdminOrderDetailScreen() {
           </Text>
         </InfoBlock>
 
+        {wastePhotoUrl ? (
+          <InfoBlock label="FOTO DEL RESIDUO">
+            <Image
+              source={{ uri: wastePhotoUrl }}
+              style={styles.wastePhoto}
+              contentFit="cover"
+            />
+          </InfoBlock>
+        ) : null}
+
         {isCompleted ? (
           <View style={styles.doneCard}>
             <Text style={styles.doneTitle}>RECOGIDA COMPLETADA</Text>
@@ -141,6 +181,11 @@ const styles = StyleSheet.create({
     color: COLORS.green,
     marginBottom: SPACING.lg,
     marginTop: SPACING.sm,
+  },
+  wastePhoto: {
+    width: "100%",
+    height: 220,
+    borderRadius: RADIUS.md,
   },
   grid: {
     flexDirection: "row",

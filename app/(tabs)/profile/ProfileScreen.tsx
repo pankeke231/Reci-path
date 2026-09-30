@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, View, Pressable } from "react-native";
+import { Alert, StyleSheet, Text, View, Pressable, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../../../hooks/useAuth";
 import { useProfile } from "../../../hooks/useProfile";
 import { getProfileDisplayName } from "../../../models/user";
-import { ROLE_LABELS } from "../../../constants/roles";
+import { ROLE_LABELS, ROLES } from "../../../constants/roles";
 import COLORS from "../../../constants/colors";
 import { SPACING, TYPOGRAPHY, RADIUS } from "../../../ui/theme/spacing";
 import {
@@ -20,6 +22,7 @@ import {
   isValidCellPhone,
   normalizeDocumentId,
 } from "../../../utils/validators";
+import { imageStorageService } from "../../../services/imageStorageService";
 
 function ProfileHeader({ onBack }: { onBack: () => void }) {
   return (
@@ -40,6 +43,11 @@ export default function ProfileScreen() {
   const [lastNames, setLastNames] = useState(profile?.last_names ?? "");
   const [address, setAddress] = useState(profile?.address ?? "");
   const [phone, setPhone] = useState(profile?.phone ?? "");
+  const [avatarDisplayUrl, setAvatarDisplayUrl] = useState<string | null>(null);
+  const [avatarLoading, setAvatarLoading] = useState(false);
+
+  const canChangeAvatar =
+    profile?.role === ROLES.CITIZEN || profile?.role === ROLES.COLLECTOR;
 
   useEffect(() => {
     setDocumentId(profile?.document_id ?? "");
@@ -54,6 +62,98 @@ export default function ProfileScreen() {
     profile?.address,
     profile?.phone,
   ]);
+
+  useEffect(() => {
+    let active = true;
+    const avatarPath = profile?.avatar_url;
+
+    if (!avatarPath) {
+      setAvatarDisplayUrl(null);
+      return;
+    }
+
+    const resolveUrl = avatarPath.startsWith("http")
+      ? Promise.resolve(avatarPath)
+      : imageStorageService.createSignedUrl(avatarPath);
+
+    resolveUrl
+      .then((url) => {
+        if (active) setAvatarDisplayUrl(url);
+      })
+      .catch((error) => {
+        if (active) Alert.alert("Error", getErrorMessage(error));
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [profile?.avatar_url]);
+
+  const handleChooseAvatar = async () => {
+    if (!profile?.id || !canChangeAvatar) return;
+
+    let uploadedPath: string | null = null;
+    try {
+      const permission =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permission.granted) {
+        Alert.alert(
+          "Permiso requerido",
+          "Permite el acceso a tus fotos para elegir una imagen de perfil.",
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+      if (result.canceled) return;
+
+      setAvatarLoading(true);
+      const asset = result.assets[0];
+      uploadedPath = await imageStorageService.upload("Profile", profile.id, {
+        uri: asset.uri,
+        mimeType: asset.mimeType,
+        fileName: asset.fileName,
+      });
+      const displayUrl =
+        await imageStorageService.createSignedUrl(uploadedPath);
+      await updateProfile({ avatar_url: uploadedPath });
+      setAvatarDisplayUrl(displayUrl);
+      const oldAvatarPath = profile.avatar_url;
+      if (
+        oldAvatarPath &&
+        !oldAvatarPath.startsWith("http") &&
+        oldAvatarPath !== uploadedPath
+      ) {
+        try {
+          await imageStorageService.remove(oldAvatarPath);
+        } catch (error) {
+          Alert.alert(
+            "Foto actualizada",
+            `Se guardó la nueva foto, pero no se pudo eliminar la anterior: ${getErrorMessage(error)}`,
+          );
+        }
+      }
+    } catch (error) {
+      if (uploadedPath) {
+        try {
+          await imageStorageService.remove(uploadedPath);
+        } catch (cleanupError) {
+          Alert.alert(
+            "Error al limpiar la imagen",
+            getErrorMessage(cleanupError),
+          );
+        }
+      }
+      Alert.alert("Error", getErrorMessage(error));
+    } finally {
+      setAvatarLoading(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!isValidCellPhone(phone)) {
@@ -92,14 +192,40 @@ export default function ProfileScreen() {
       <ProfileHeader onBack={() => navigation.goBack()} />
       <SectionHeader title="Mi perfil" subtitle="Datos de tu cuenta S.E.A" />
 
-      <View style={styles.avatar}>
-        <Ionicons name="person" size={40} color={COLORS.green} />
-      </View>
+      {canChangeAvatar ? (
+        <Pressable
+          onPress={handleChooseAvatar}
+          disabled={avatarLoading}
+          accessibilityRole="button"
+          accessibilityLabel="Cambiar foto de perfil"
+          style={styles.avatarButton}
+        >
+          <View style={styles.avatar}>
+            {avatarDisplayUrl ? (
+              <Image source={{ uri: avatarDisplayUrl }} style={styles.avatarImage} />
+            ) : (
+              <Ionicons name="person" size={40} color={COLORS.green} />
+            )}
+            <View style={styles.avatarEditBadge}>
+              {avatarLoading ? (
+                <ActivityIndicator size="small" color={COLORS.bg} />
+              ) : (
+                <Ionicons name="camera" size={16} color={COLORS.bg} />
+              )}
+            </View>
+          </View>
+          <Text style={styles.changeAvatarText}>Cambiar foto</Text>
+        </Pressable>
+      ) : (
+        <View style={styles.avatar}>
+          <Ionicons name="person" size={40} color={COLORS.green} />
+        </View>
+      )}
       <Text style={styles.displayName}>
         {getProfileDisplayName(profile) || "Usuario"}
       </Text>
       <Text style={styles.role}>
-        {ROLE_LABELS[profile?.role] ?? profile?.role}
+        {profile?.role ? ROLE_LABELS[profile.role] ?? profile.role : ""}
       </Text>
 
       <Card>
@@ -177,6 +303,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
+    marginBottom: SPACING.md,
+    overflow: "visible",
+  },
+  avatarButton: {
+    alignItems: "center",
+  },
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: RADIUS.xl,
+  },
+  avatarEditBadge: {
+    position: "absolute",
+    right: -5,
+    bottom: -5,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: COLORS.green,
+    borderWidth: 2,
+    borderColor: COLORS.bg,
+  },
+  changeAvatarText: {
+    ...TYPOGRAPHY.caption,
+    color: COLORS.green,
     marginBottom: SPACING.md,
   },
   displayName: {

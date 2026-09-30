@@ -1,6 +1,7 @@
 import { ORDER_STATUS } from "../constants/orderStatus";
 import { ACTIVE_STATUSES, COMPLETED_STATUSES } from "../constants/citizen";
 import type { CollectionOrder } from "../models/order";
+import type { WasteTypeSelection } from "../models/waste";
 
 const PICKUP_PREFIX = "[PICKUP]:";
 
@@ -46,6 +47,29 @@ export function parseOrderDetails(
     pickupDate: typeof pickupDate === "string" ? pickupDate : null,
     description: typeof description === "string" ? description : "",
   };
+}
+
+export function getOrderPhotoPath(photos: string | null | undefined): string | null {
+  return photos?.trim() || null;
+}
+
+export function getOrderWasteCategories(
+  detalles: Record<string, unknown> | null | undefined,
+): WasteTypeSelection[] {
+  const categories = detalles?.categories;
+  if (!Array.isArray(categories)) return [];
+
+  return categories.filter(
+    (category): category is WasteTypeSelection =>
+      typeof category === "object" &&
+      category !== null &&
+      "id" in category &&
+      typeof category.id === "string" &&
+      "name" in category &&
+      typeof category.name === "string" &&
+      "color_code" in category &&
+      typeof category.color_code === "string",
+  );
 }
 
 /**
@@ -141,6 +165,11 @@ export function formatCompletedHeader(date: string | Date | null | undefined): s
  * @param {import('../../../models/order').CollectionOrder} order
  */
 export function getWasteLabel(order: CollectionOrder): string {
+  const categories = getOrderWasteCategories(order.detalles);
+  if (categories.length > 0) {
+    return categories.map((category) => category.name.toUpperCase()).join(", ");
+  }
+
   return (
     order.waste_types?.name?.toUpperCase() ??
     order.waste_type_id?.toUpperCase() ??

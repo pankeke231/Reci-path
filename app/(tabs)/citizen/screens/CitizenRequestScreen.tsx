@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Alert,
-  Modal,
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -11,16 +11,23 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { useAuth } from "../../../../hooks/useAuth";
 import { useOrders } from "../../../../hooks/useOrders";
 import { getProfileDisplayName } from "../../../../models/user";
+import {
+  getWasteContainerColor,
+  type WasteType,
+  type WasteTypeSelection,
+} from "../../../../models/waste";
 import { wasteService } from "../../../../services/wasteService";
 import COLORS from "../../../../constants/colors";
 import { RADIUS, SPACING, TYPOGRAPHY } from "../../../../ui/theme/spacing";
 import { Screen } from "../../../../ui/components";
 import { getErrorMessage } from "../../../../utils/errors";
 import type { ReactNode } from "react";
+import { imageStorageService } from "../../../../services/imageStorageService";
 
 function FormField({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -40,24 +47,51 @@ export default function CitizenRequestScreen() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [pickupDate, setPickupDate] = useState("");
-  const [wasteTypes, setWasteTypes] = useState([]);
-  const [wasteTypeId, setWasteTypeId] = useState("");
-  const [categoryLabel, setCategoryLabel] = useState("");
+  const [wasteTypes, setWasteTypes] = useState<WasteType[]>([]);
+  const [selectedWasteTypeIds, setSelectedWasteTypeIds] = useState<string[]>(
+    [],
+  );
+  const selectedWasteTypes = wasteTypes.filter((type) =>
+    selectedWasteTypeIds.includes(type.id),
+  );
   const [description, setDescription] = useState("");
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [wastePhoto, setWastePhoto] =
+    useState<ImagePicker.ImagePickerAsset | null>(null);
+  const [showCategoryOptions, setShowCategoryOptions] = useState(false);
+  const [wasteTypesLoading, setWasteTypesLoading] = useState(true);
+  const [wasteTypesError, setWasteTypesError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setFullName(getProfileDisplayName(profile));
     setPhone(profile?.phone ?? "");
     setAddress(profile?.address ?? "");
-    wasteService.listTypes().then((types) => {
-      setWasteTypes(types);
-      if (types[0]) {
-        setWasteTypeId(types[0].id);
-        setCategoryLabel(types[0].name);
-      }
-    });
+    setWasteTypesLoading(true);
+    setWasteTypesError(null);
+    let active = true;
+    wasteService
+      .listTypes()
+      .then((types) => {
+        if (!active) return;
+        setWasteTypes(types);
+        setSelectedWasteTypeIds((selected) =>
+          selected.filter((id) => types.some((type) => type.id === id)),
+        );
+      })
+      .catch((error) => {
+        if (active) {
+          const message = getErrorMessage(error);
+          setWasteTypesError(message);
+          Alert.alert("Error al cargar residuos", message);
+        }
+      })
+      .finally(() => {
+        if (active) setWasteTypesLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, [profile]);
 
   const validateDate = (value: string): string | null => {
@@ -68,6 +102,29 @@ export default function CitizenRequestScreen() {
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return null;
     return iso;
+  };
+
+  const handleChooseWastePhoto = async () => {
+    try {
+      const permission =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permission.granted) {
+        Alert.alert(
+          "Permiso requerido",
+          "Permite el acceso a tus fotos para adjuntar una imagen del residuo.",
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        quality: 0.8,
+      });
+      if (!result.canceled) setWastePhoto(result.assets[0]);
+    } catch (error) {
+      Alert.alert("Error al seleccionar la foto", getErrorMessage(error));
+    }
   };
 
   const handleSubmit = async () => {
@@ -88,7 +145,7 @@ export default function CitizenRequestScreen() {
       Alert.alert("Validación", "Ingresa la fecha como dd/mm/aaaa");
       return;
     }
-    if (!wasteTypeId) {
+    if (selectedWasteTypes.length === 0) {
       Alert.alert("Validación", "Selecciona una categoría");
       return;
     }
@@ -98,14 +155,37 @@ export default function CitizenRequestScreen() {
     }
 
     setLoading(true);
+    let uploadedPhotoPath: string | null = null;
     try {
+      if (!profile?.id) {
+        throw new Error("Debes iniciar sesión para crear un pedido.");
+      }
+
+      if (wastePhoto) {
+        uploadedPhotoPath = await imageStorageService.upload(
+          "Residue",
+          profile.id,
+          {
+            uri: wastePhoto.uri,
+            mimeType: wastePhoto.mimeType,
+            fileName: wastePhoto.fileName,
+          },
+        );
+      }
+
       await createOrder({
-        waste_type_id: wasteTypeId,
+        waste_type_id: selectedWasteTypes[0].id,
         address: address.trim(),
         detalles: {
           pickup_date: isoDate,
           description: description.trim(),
+          categories: selectedWasteTypes.map<WasteTypeSelection>((type) => ({
+            id: type.id,
+            name: type.name,
+            color_code: type.color_code,
+          })),
         },
+        photos: uploadedPhotoPath,
       });
       Alert.alert(
         "Solicitud enviada",
@@ -120,6 +200,16 @@ export default function CitizenRequestScreen() {
         ],
       );
     } catch (error) {
+      if (uploadedPhotoPath) {
+        try {
+          await imageStorageService.remove(uploadedPhotoPath);
+        } catch (cleanupError) {
+          Alert.alert(
+            "Error al limpiar la imagen",
+            getErrorMessage(cleanupError),
+          );
+        }
+      }
       Alert.alert("Error", getErrorMessage(error));
     } finally {
       setLoading(false);
@@ -192,18 +282,126 @@ export default function CitizenRequestScreen() {
         <FormField label="Seleccione una Categoría">
           <Pressable
             style={styles.select}
-            onPress={() => setShowCategoryModal(true)}
+            onPress={() => setShowCategoryOptions((visible) => !visible)}
           >
             <Text
               style={[
                 styles.selectText,
-                !categoryLabel && styles.selectPlaceholder,
+                selectedWasteTypes.length === 0 && styles.selectPlaceholder,
               ]}
             >
-              {categoryLabel || "Elegir categoría"}
+              {selectedWasteTypes.length > 0
+                ? selectedWasteTypes.map((type) => type.name).join(", ")
+                : "Elegir una o más categorías"}
             </Text>
             <Ionicons name="chevron-down" size={18} color={COLORS.textMuted} />
           </Pressable>
+          {selectedWasteTypes.length > 0 ? (
+            <View style={styles.categoryInfo}>
+              {selectedWasteTypes.map((type) => {
+                const color = getWasteContainerColor(type.color_code);
+                return (
+                  <View
+                    key={type.id}
+                    style={[
+                      styles.colorBadge,
+                      {
+                        backgroundColor: color.backgroundColor,
+                        borderColor: color.borderColor,
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={[styles.colorBadgeText, { color: color.textColor }]}
+                    >
+                      {type.name}: {color.name}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
+          ) : (
+            <Text style={styles.categoryDescription}>
+              {wasteTypes.length === 0
+                ? "No hay residuos disponibles para recoger."
+                : "Elige un residuo."}
+            </Text>
+          )}
+          {showCategoryOptions ? (
+            <View style={styles.categoryOptionsPanel}>
+              <Text style={styles.modalSubtitle}>
+                Puedes seleccionar varias categorías. El color corresponde al
+                contenedor de cada residuo.
+              </Text>
+              {wasteTypesLoading ? (
+                <Text style={styles.categoryEmptyMessage}>
+                  Cargando categorías…
+                </Text>
+              ) : wasteTypesError ? (
+                <Text style={styles.categoryEmptyMessage}>
+                  No se pudieron cargar las categorías: {wasteTypesError}
+                </Text>
+              ) : wasteTypes.length === 0 ? (
+                <Text style={styles.categoryEmptyMessage}>
+                  No hay residuos activos para recoger.
+                </Text>
+              ) : (
+                <ScrollView
+                  style={styles.categoryOptionsList}
+                  contentContainerStyle={styles.categoryOptionsContent}
+                  nestedScrollEnabled
+                  keyboardShouldPersistTaps="handled"
+                  showsVerticalScrollIndicator
+                >
+                  {wasteTypes.map((type) => {
+                    const selected = selectedWasteTypeIds.includes(type.id);
+                    const color = getWasteContainerColor(type.color_code);
+                    return (
+                      <Pressable
+                        key={type.id}
+                        style={[
+                          styles.modalItem,
+                          selected && styles.modalItemSelected,
+                        ]}
+                        onPress={() => {
+                          setSelectedWasteTypeIds((current) =>
+                            selected
+                              ? current.filter((id) => id !== type.id)
+                              : [...current, type.id],
+                          );
+                        }}
+                      >
+                        <View style={styles.modalItemContent}>
+                          <View
+                            style={[
+                              styles.colorDot,
+                              {
+                                backgroundColor: color.backgroundColor,
+                                borderColor: color.borderColor,
+                              },
+                            ]}
+                          />
+                          <View style={styles.modalItemTextContainer}>
+                            <Text style={styles.modalItemText}>
+                              {type.name}
+                            </Text>
+                          </View>
+                          <Text style={styles.modalColorName}>
+                            {color.name}
+                          </Text>
+                          <Ionicons
+                            name={selected ? "checkbox" : "square-outline"}
+                            size={22}
+                            color={selected ? COLORS.green : COLORS.textMuted}
+                          />
+                        </View>
+                      </Pressable>
+                    );
+                  })}
+                </ScrollView>
+              )}
+            </View>
+          ) : null}
         </FormField>
 
         <FormField label="Ingrese brevemente descripción">
@@ -217,6 +415,35 @@ export default function CitizenRequestScreen() {
             placeholder="Ej: Dos cajas de cartón corrugado..."
             placeholderTextColor={COLORS.textMuted}
           />
+        </FormField>
+
+        <FormField label="Foto del residuo (opcional)">
+          {wastePhoto ? (
+            <View style={styles.photoPreviewWrap}>
+              <Image source={{ uri: wastePhoto.uri }} style={styles.photoPreview} />
+              <Pressable
+                onPress={() => setWastePhoto(null)}
+                style={styles.removePhotoButton}
+                accessibilityLabel="Quitar foto"
+              >
+                <Ionicons name="close" size={18} color={COLORS.textPrimary} />
+              </Pressable>
+            </View>
+          ) : null}
+          <Pressable
+            style={styles.photoButton}
+            onPress={handleChooseWastePhoto}
+            disabled={loading}
+          >
+            <Ionicons
+              name={wastePhoto ? "image-outline" : "camera-outline"}
+              size={20}
+              color={COLORS.green}
+            />
+            <Text style={styles.photoButtonText}>
+              {wastePhoto ? "Cambiar foto" : "Seleccionar foto"}
+            </Text>
+          </Pressable>
         </FormField>
 
         <Pressable
@@ -238,29 +465,6 @@ export default function CitizenRequestScreen() {
         </Pressable>
       </ScrollView>
 
-      <Modal visible={showCategoryModal} transparent animationType="fade">
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setShowCategoryModal(false)}
-        >
-          <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>Categoría de residuo</Text>
-            {wasteTypes.map((type) => (
-              <Pressable
-                key={type.id}
-                style={styles.modalItem}
-                onPress={() => {
-                  setWasteTypeId(type.id);
-                  setCategoryLabel(type.name);
-                  setShowCategoryModal(false);
-                }}
-              >
-                <Text style={styles.modalItemText}>{type.name}</Text>
-              </Pressable>
-            ))}
-          </View>
-        </Pressable>
-      </Modal>
     </Screen>
   );
 }
@@ -325,6 +529,41 @@ const styles = StyleSheet.create({
   textArea: {
     minHeight: 110,
   },
+  photoButton: {
+    minHeight: 50,
+    borderWidth: 1,
+    borderColor: COLORS.cardBorder,
+    borderRadius: RADIUS.md,
+    backgroundColor: COLORS.inputBg,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: SPACING.sm,
+  },
+  photoButtonText: {
+    ...TYPOGRAPHY.label,
+    color: COLORS.green,
+  },
+  photoPreviewWrap: {
+    position: "relative",
+    marginBottom: SPACING.sm,
+  },
+  photoPreview: {
+    width: "100%",
+    height: 190,
+    borderRadius: RADIUS.md,
+  },
+  removePhotoButton: {
+    position: "absolute",
+    top: SPACING.sm,
+    right: SPACING.sm,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  },
   select: {
     backgroundColor: COLORS.inputBg,
     borderWidth: 1,
@@ -342,6 +581,28 @@ const styles = StyleSheet.create({
   },
   selectPlaceholder: {
     color: COLORS.textMuted,
+  },
+  categoryInfo: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: SPACING.sm,
+    marginTop: SPACING.sm,
+  },
+  categoryDescription: {
+    ...TYPOGRAPHY.caption,
+    color: COLORS.textMuted,
+    flex: 1,
+    marginTop: SPACING.xs,
+  },
+  colorBadge: {
+    borderWidth: 1,
+    borderRadius: RADIUS.full,
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: 4,
+  },
+  colorBadgeText: {
+    ...TYPOGRAPHY.caption,
+    fontWeight: "700",
   },
   submitWrap: {
     marginTop: SPACING.lg,
@@ -361,22 +622,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: COLORS.overlay,
-    justifyContent: "flex-end",
-  },
-  modalCard: {
+  categoryOptionsPanel: {
+    marginTop: SPACING.sm,
     backgroundColor: COLORS.cardBg,
-    borderTopLeftRadius: RADIUS.xl,
-    borderTopRightRadius: RADIUS.xl,
-    padding: SPACING.lg,
+    borderRadius: RADIUS.md,
+    padding: SPACING.md,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
   },
-  modalTitle: {
-    ...TYPOGRAPHY.h3,
-    color: COLORS.textPrimary,
+  categoryOptionsList: {
+    height: 220,
+    flexGrow: 0,
+    flexShrink: 0,
+    backgroundColor: COLORS.inputBg,
+    borderRadius: RADIUS.sm,
+  },
+  categoryOptionsContent: {
+    paddingHorizontal: SPACING.sm,
+    paddingBottom: SPACING.sm,
+  },
+  categoryEmptyMessage: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.textSecondary,
+    paddingVertical: SPACING.lg,
+  },
+  modalSubtitle: {
+    ...TYPOGRAPHY.caption,
+    color: COLORS.textMuted,
     marginBottom: SPACING.md,
   },
   modalItem: {
@@ -384,8 +656,30 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.cardBorder,
   },
+  modalItemSelected: {
+    backgroundColor: `${COLORS.green}14`,
+  },
   modalItemText: {
     ...TYPOGRAPHY.body,
     color: COLORS.textPrimary,
+  },
+  modalItemContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: SPACING.sm,
+  },
+  colorDot: {
+    width: 18,
+    height: 18,
+    borderWidth: 1,
+    borderRadius: 9,
+  },
+  modalItemTextContainer: {
+    flex: 1,
+  },
+  modalColorName: {
+    ...TYPOGRAPHY.caption,
+    color: COLORS.textSecondary,
+    fontWeight: "700",
   },
 });

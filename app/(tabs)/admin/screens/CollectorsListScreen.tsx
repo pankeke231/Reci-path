@@ -1,6 +1,7 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Alert,
   FlatList,
   Image,
   Pressable,
@@ -16,6 +17,44 @@ import { SPACING, TYPOGRAPHY } from "../../../../ui/theme/spacing";
 import { useCollectors } from "../../../../hooks/useCollectors";
 import { getProfileDisplayName } from "../../../../models/user";
 import type { UserProfile } from "../../../../models/user";
+import { imageStorageService } from "../../../../services/imageStorageService";
+import { getErrorMessage } from "../../../../utils/errors";
+
+function CollectorAvatar({ path }: { path: string | null }) {
+  const [url, setUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    if (!path) {
+      setUrl(null);
+      return;
+    }
+
+    const resolveUrl = path.startsWith("http")
+      ? Promise.resolve(path)
+      : imageStorageService.createSignedUrl(path);
+
+    resolveUrl
+      .then((signedUrl) => {
+        if (active) setUrl(signedUrl);
+      })
+      .catch((error) => {
+        if (active) Alert.alert("Error al cargar la foto", getErrorMessage(error));
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [path]);
+
+  return url ? (
+    <Image source={{ uri: url }} style={styles.avatar} />
+  ) : (
+    <View style={styles.avatarPlaceholder}>
+      <MaterialIcons name="person" size={30} color="#94A3B8" />
+    </View>
+  );
+}
 
 export default function CollectorsListScreen() {
   const navigation = useNavigation();
@@ -43,13 +82,7 @@ export default function CollectorsListScreen() {
     return (
       <View style={styles.card}>
         <View style={styles.leftSection}>
-          {item.avatar_url ? (
-            <Image source={{ uri: item.avatar_url }} style={styles.avatar} />
-          ) : (
-            <View style={styles.avatarPlaceholder}>
-              <MaterialIcons name="person" size={30} color="#94A3B8" />
-            </View>
-          )}
+          <CollectorAvatar path={item.avatar_url} />
 
           <View style={{ flex: 1 }}>
             <Text style={styles.name}>{name}</Text>
