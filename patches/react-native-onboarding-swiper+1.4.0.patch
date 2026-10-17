@@ -1,0 +1,37 @@
+diff --git a/node_modules/react-native-onboarding-swiper/src/index.js b/node_modules/react-native-onboarding-swiper/src/index.js
+index 4c24c9b..7719b66 100644
+--- a/node_modules/react-native-onboarding-swiper/src/index.js
++++ b/node_modules/react-native-onboarding-swiper/src/index.js
+@@ -5,12 +5,12 @@ import {
+   I18nManager,
+   Platform,
+   StatusBar,
+-  SafeAreaView,
+   View,
+ } from 'react-native';
+ 
+ import PropTypes from 'prop-types';
+ import React, { Component } from 'react';
++import { SafeAreaView } from 'react-native-safe-area-context';
+ import tinycolor from 'tinycolor2';
+ 
+ import Page from './Page';
+@@ -104,8 +104,7 @@ class Onboarding extends Component {
+     });
+   };
+ 
+-  _onLayout = () => {
+-    const { width, height } = Dimensions.get('window');
++  _onLayout = ({ nativeEvent: { layout: { width, height } } }) => {
+     this.setState({ width, height });
+   };
+ 
+@@ -252,7 +251,7 @@ class Onboarding extends Component {
+           }
+         : onSkip;
+ 
+-    const windowWidth = Dimensions.get('window').width;
++    const windowWidth = this.state.width || Dimensions.get('window').width;
+ 
+     return (
+       <Animated.View

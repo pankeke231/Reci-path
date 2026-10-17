@@ -5,6 +5,7 @@ import CitizenHistoryScreen from "../app/(tabs)/citizen/screens/CitizenHistorySc
 import CitizenRequestScreen from "../app/(tabs)/citizen/screens/CitizenRequestScreen";
 import CitizenOrderDetailScreen from "../app/(tabs)/citizen/screens/CitizenOrderDetailScreen";
 import ProfileScreen from "../app/(tabs)/profile/ProfileScreen";
+import MapScreen from "../app/(tabs)/map";
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ export default function CitizenNavigator() {
         component={CitizenOrderDetailScreen}
       />
       <Stack.Screen name="CitizenProfile" component={ProfileScreen} />
+      <Stack.Screen name="MapScreen" component={MapScreen} />
     </Stack.Navigator>
   );
 }

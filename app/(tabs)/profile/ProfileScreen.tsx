@@ -228,6 +228,28 @@ export default function ProfileScreen() {
         {profile?.role ? ROLE_LABELS[profile.role] ?? profile.role : ""}
       </Text>
 
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Ver mi ubicación en el mapa"
+        onPress={() => navigation.navigate("MapScreen")}
+        style={styles.locationCard}
+      >
+        <View style={styles.locationIcon}>
+          <Ionicons name="location" size={22} color={COLORS.green} />
+        </View>
+        <View style={styles.locationInfo}>
+          <Text style={styles.locationTitle}>Mi ubicación</Text>
+          <Text style={styles.locationSubtitle}>
+            Ver dónde estás en el mapa
+          </Text>
+        </View>
+        <Ionicons
+          name="chevron-forward"
+          size={20}
+          color={COLORS.textSecondary}
+        />
+      </Pressable>
+
       <Card>
         <Input
           label="Nº de identidad"
@@ -343,6 +365,37 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: SPACING.xs,
     marginBottom: SPACING.lg,
+  },
+  locationCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: SPACING.md,
+    marginBottom: SPACING.md,
+    borderRadius: RADIUS.lg,
+    backgroundColor: COLORS.cardBg,
+    borderWidth: 1,
+    borderColor: COLORS.cardBorder,
+  },
+  locationIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: RADIUS.md,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: COLORS.bg,
+    marginRight: SPACING.md,
+  },
+  locationInfo: {
+    flex: 1,
+  },
+  locationTitle: {
+    ...TYPOGRAPHY.label,
+    color: COLORS.textPrimary,
+  },
+  locationSubtitle: {
+    ...TYPOGRAPHY.caption,
+    color: COLORS.textSecondary,
+    marginTop: SPACING.xs,
   },
   readOnly: {
     opacity: 0.7,

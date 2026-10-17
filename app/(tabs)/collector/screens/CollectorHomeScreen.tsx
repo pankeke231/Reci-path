@@ -150,6 +150,14 @@ export default function CollectorHomeScreen() {
           <Text style={styles.navText}>Perfil</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => navigation.navigate("MapScreen")}
+        >
+          <MaterialIcons name="map" size={24} color="#94A3B8" />
+          <Text style={styles.navText}>Mapa</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.navItem} onPress={handleLogout}>
           <MaterialIcons name="logout" size={24} color="#94A3B8" />
           <Text style={styles.navText}>Cerrar sesión</Text>

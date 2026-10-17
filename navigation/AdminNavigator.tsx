@@ -9,6 +9,8 @@ import CollectorEditScreen from "../app/(tabs)/admin/screens/CollectorEditScreen
 import AdminCollectionsScreen from "../app/(tabs)/admin/screens/AdminCollectionsScreen";
 import AdminOrderDetailScreen from "../app/(tabs)/admin/screens/AdminOrderDetailScreen";
 import ProfileScreen from "../app/(tabs)/profile/ProfileScreen";
+import MapScreen from "../app/(tabs)/map";
+import AssignOrdersScreen from "../app/(tabs)/admin/screens/AssignOrdersScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +41,8 @@ export default function AdminNavigator() {
         component={AdminOrderDetailScreen}
       />
       <Stack.Screen name="AdminProfile" component={ProfileScreen} />
+      <Stack.Screen name="MapScreen" component={MapScreen} />
+      <Stack.Screen name="AssignOrders" component={AssignOrdersScreen} />
     </Stack.Navigator>
   );
 }

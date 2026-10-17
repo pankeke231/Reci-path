@@ -24,6 +24,10 @@ export default function AdminHomeScreen() {
     navigation.navigate("AdminCollections");
   };
 
+  const handleAssignOrders = () => {
+    navigation.navigate("AssignOrders");
+  };
+
   const handleProfile = () => {
     navigation.navigate("AdminProfile");
   };
@@ -103,6 +107,21 @@ export default function AdminHomeScreen() {
 
           <MaterialIcons name="list-alt" size={30} color="#64748B" />
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.assignmentCard}
+          onPress={handleAssignOrders}
+          activeOpacity={0.9}
+        >
+          <View style={styles.cardContent}>
+            <MaterialIcons name="assignment-ind" size={38} color="#A7F3D0" />
+            <Text style={styles.assignmentTitle}>Asignar solicitudes</Text>
+            <Text style={styles.assignmentSubtitle}>
+              Selecciona varias solicitudes pendientes y un recolector
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={30} color="#A7F3D0" />
+        </TouchableOpacity>
       </View>
 
       {/* Bottom Navigation */}
@@ -110,6 +129,14 @@ export default function AdminHomeScreen() {
         <TouchableOpacity style={styles.navButton} onPress={handleProfile}>
           <Ionicons name="person-outline" size={22} color="#94A3B8" />
           <Text style={styles.navText}>Perfil</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate("MapScreen")}
+        >
+          <Ionicons name="map-outline" size={22} color="#94A3B8" />
+          <Text style={styles.navText}>Mapa</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.navButton} onPress={handleLogout}>
@@ -226,6 +253,30 @@ const styles = StyleSheet.create({
 
   secondarySubtitle: {
     color: "#94A3B8",
+    marginTop: 4,
+  },
+
+  assignmentCard: {
+    marginTop: 20,
+    padding: 24,
+    borderRadius: 24,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#164E3B",
+    borderWidth: 1,
+    borderColor: "#10B981",
+  },
+
+  assignmentTitle: {
+    color: "#D1FAE5",
+    fontSize: 20,
+    fontWeight: "700",
+    marginTop: 10,
+  },
+
+  assignmentSubtitle: {
+    color: "#A7F3D0",
     marginTop: 4,
   },
 

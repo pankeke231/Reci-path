@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   Alert,
-  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
@@ -12,6 +11,7 @@ import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { adminService } from "../../../../services/adminService";
 import { getErrorMessage } from "../../../../utils/errors";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const VEHICLE_TYPES = [
   "Motocarro",

@@ -28,19 +28,7 @@ export const ordersService = {
     return (data ?? []).map(createOrder);
   },
 
-  /**
-   * @param {string} collectorId
-   */
-  async listByCollector(collectorId: string): Promise<CollectionOrder[]> {
-    const { data, error } = await supabase
-      .from(TABLES.ORDERS)
-      .select(ORDER_SELECT)
-      .eq("collector_id", collectorId)
-      .order("created_at", { ascending: false });
 
-    if (error) throw error;
-    return (data ?? []).map(createOrder);
-  },
 
   /**
    * Pedidos visibles para el recolector: asignados a él + pendientes sin asignar.
@@ -131,6 +119,30 @@ export const ordersService = {
    */
   async updateStatus(orderId: string, status: string) {
     return crud.update(orderId, { status }, ORDER_SELECT);
+  },
+
+  async assignPendingOrders(orderIds: string[], collectorId: string): Promise<string[]> {
+    if (orderIds.length === 0) {
+      throw new Error("Selecciona al menos una solicitud para asignar.");
+    }
+    if (!collectorId) {
+      throw new Error("Selecciona un recolector.");
+    }
+
+    const { data, error } = await supabase
+      .from(TABLES.ORDERS)
+      .update({
+        collector_id: collectorId,
+        status: ORDER_STATUS.ASSIGNED,
+        updated_at: new Date().toISOString(),
+      })
+      .in("id", orderIds)
+      .eq("status", ORDER_STATUS.PENDING)
+      .is("collector_id", null)
+      .select("id");
+
+    if (error) throw error;
+    return (data ?? []).map((order) => order.id);
   },
 
   /**

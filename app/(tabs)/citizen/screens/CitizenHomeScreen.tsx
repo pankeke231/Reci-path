@@ -146,6 +146,14 @@ export default function CitizenHomeScreen() {
           <Text style={styles.navText}>Perfil</Text>
         </Pressable>
 
+        <Pressable
+          style={styles.navButton}
+          onPress={() => navigation.navigate("MapScreen")}
+        >
+          <Ionicons name="map-outline" size={22} color="#94A3B8" />
+          <Text style={styles.navText}>Mapa</Text>
+        </Pressable>
+
         <Pressable style={styles.navButton} onPress={handleSignOut}>
           <Ionicons name="log-out-outline" size={22} color="#94A3B8" />
           <Text style={styles.navText}>Cerrar sesión</Text>

@@ -5,6 +5,8 @@ import CollectorHistoryScreen from "../app/(tabs)/collector/screens/CollectorHis
 import CollectorOrderDetailScreen from "../app/(tabs)/collector/screens/CollectorOrderDetailScreen";
 import CollectorRoutesScreen from "../app/(tabs)/collector/screens/CollectorRoutesScreen";
 import ProfileScreen from "../app/(tabs)/profile/ProfileScreen";
+import MapScreen from "../app/(tabs)/map";
+import CollectorViewRouteScreen from "../app/collector/view-route";
 
 const Stack = createNativeStackNavigator();
 
@@ -27,7 +29,12 @@ export default function CollectorNavigator() {
         component={CollectorOrderDetailScreen}
       />
       <Stack.Screen name="CollectorRoutes" component={CollectorRoutesScreen} />
+      <Stack.Screen
+        name="CollectorViewRoute"
+        component={CollectorViewRouteScreen}
+      />
       <Stack.Screen name="CollectorProfile" component={ProfileScreen} />
+      <Stack.Screen name="MapScreen" component={MapScreen} />
     </Stack.Navigator>
   );
 }
