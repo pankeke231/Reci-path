@@ -1,16 +1,16 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import COLORS from "../constants/colors";
-import AdminHomeScreen from "../app/(tabs)/admin/screens/AdminHomeScreen";
-import CollectorsListScreen from "../app/(tabs)/admin/screens/CollectorsListScreen";
-import RegisterCollectorScreen from "../app/(tabs)/admin/screens/RegisterCollectorScreen";
-import RegisterVehicleScreen from "../app/(tabs)/admin/screens/RegisterVehicle";
-import CollectorDetailScreen from "../app/(tabs)/admin/screens/CollectorDetailScreen";
-import CollectorEditScreen from "../app/(tabs)/admin/screens/CollectorEditScreen";
-import AdminCollectionsScreen from "../app/(tabs)/admin/screens/AdminCollectionsScreen";
-import AdminOrderDetailScreen from "../app/(tabs)/admin/screens/AdminOrderDetailScreen";
-import ProfileScreen from "../app/(tabs)/profile/ProfileScreen";
+import AdminHomeScreen from "@/features/admin/screens/AdminHomeScreen";
+import CollectorsListScreen from "@/features/admin/screens/CollectorsListScreen";
+import RegisterCollectorScreen from "@/features/admin/screens/RegisterCollectorScreen";
+import RegisterVehicleScreen from "@/features/admin/screens/RegisterVehicle";
+import CollectorDetailScreen from "@/features/admin/screens/CollectorDetailScreen";
+import CollectorEditScreen from "@/features/admin/screens/CollectorEditScreen";
+import AdminCollectionsScreen from "@/features/admin/screens/AdminCollectionsScreen";
+import AdminOrderDetailScreen from "@/features/admin/screens/AdminOrderDetailScreen";
+import ProfileScreen from "@/features/profile/ProfileScreen";
 import MapScreen from "../app/(tabs)/map";
-import AssignOrdersScreen from "../app/(tabs)/admin/screens/AssignOrdersScreen";
+import AssignOrdersScreen from "@/features/admin/screens/AssignOrdersScreen";
 
 const Stack = createNativeStackNavigator();
 

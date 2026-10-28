@@ -1,0 +1,14 @@
+{
+  "mcp": {
+    "supabase": {
+      "type": "remote",
+      "url": "https://mcp.supabase.com/mcp?project_ref=cvsmuhmppfwgsntvdqnk"
+    },
+    "servers": {
+      "supabase": {
+        "type": "remote",
+        "url": "https://mcp.supabase.com?project_ref=cvsmuhmppfwgsntvdqnk"
+      }
+    }
+  }
+}

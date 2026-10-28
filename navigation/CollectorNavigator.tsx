@@ -1,12 +1,12 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import COLORS from "../constants/colors";
-import CollectorHomeScreen from "../app/(tabs)/collector/screens/CollectorHomeScreen";
-import CollectorHistoryScreen from "../app/(tabs)/collector/screens/CollectorHistoryScreen";
-import CollectorOrderDetailScreen from "../app/(tabs)/collector/screens/CollectorOrderDetailScreen";
-import CollectorRoutesScreen from "../app/(tabs)/collector/screens/CollectorRoutesScreen";
-import ProfileScreen from "../app/(tabs)/profile/ProfileScreen";
+import CollectorHomeScreen from "@/features/collector/screens/CollectorHomeScreen";
+import CollectorHistoryScreen from "@/features/collector/screens/CollectorHistoryScreen";
+import CollectorOrderDetailScreen from "@/features/collector/screens/CollectorOrderDetailScreen";
+import CollectorRoutesScreen from "@/features/collector/screens/CollectorRoutesScreen";
+import ProfileScreen from "@/features/profile/ProfileScreen";
 import MapScreen from "../app/(tabs)/map";
-import CollectorViewRouteScreen from "../app/collector/view-route";
+import CollectorViewRouteScreen from "@/features/collector/screens/CollectorViewRouteScreen";
 
 const Stack = createNativeStackNavigator();
 

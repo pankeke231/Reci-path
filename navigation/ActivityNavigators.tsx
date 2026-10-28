@@ -1,11 +1,11 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import COLORS from '@/constants/colors';
-import AdminCollectionsScreen from '@/app/(tabs)/admin/screens/AdminCollectionsScreen';
-import AdminOrderDetailScreen from '@/app/(tabs)/admin/screens/AdminOrderDetailScreen';
-import CitizenHistoryScreen from '@/app/(tabs)/citizen/screens/CitizenHistoryScreen';
-import CitizenOrderDetailScreen from '@/app/(tabs)/citizen/screens/CitizenOrderDetailScreen';
-import CollectorOrderDetailScreen from '@/app/(tabs)/collector/screens/CollectorOrderDetailScreen';
-import CollectorRoutesScreen from '@/app/(tabs)/collector/screens/CollectorRoutesScreen';
+import AdminCollectionsScreen from '@/features/admin/screens/AdminCollectionsScreen';
+import AdminOrderDetailScreen from '@/features/admin/screens/AdminOrderDetailScreen';
+import CitizenHistoryScreen from '@/features/citizen/screens/CitizenHistoryScreen';
+import CitizenOrderDetailScreen from '@/features/citizen/screens/CitizenOrderDetailScreen';
+import CollectorOrderDetailScreen from '@/features/collector/screens/CollectorOrderDetailScreen';
+import CollectorRoutesScreen from '@/features/collector/screens/CollectorRoutesScreen';
 
 const Stack = createNativeStackNavigator();
 

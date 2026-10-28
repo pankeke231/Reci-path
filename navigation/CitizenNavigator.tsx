@@ -1,10 +1,10 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import COLORS from "../constants/colors";
-import CitizenHomeScreen from "../app/(tabs)/citizen/screens/CitizenHomeScreen";
-import CitizenHistoryScreen from "../app/(tabs)/citizen/screens/CitizenHistoryScreen";
-import CitizenRequestScreen from "../app/(tabs)/citizen/screens/CitizenRequestScreen";
-import CitizenOrderDetailScreen from "../app/(tabs)/citizen/screens/CitizenOrderDetailScreen";
-import ProfileScreen from "../app/(tabs)/profile/ProfileScreen";
+import CitizenHomeScreen from "@/features/citizen/screens/CitizenHomeScreen";
+import CitizenHistoryScreen from "@/features/citizen/screens/CitizenHistoryScreen";
+import CitizenRequestScreen from "@/features/citizen/screens/CitizenRequestScreen";
+import CitizenOrderDetailScreen from "@/features/citizen/screens/CitizenOrderDetailScreen";
+import ProfileScreen from "@/features/profile/ProfileScreen";
 import MapScreen from "../app/(tabs)/map";
 
 const Stack = createNativeStackNavigator();

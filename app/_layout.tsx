@@ -46,7 +46,7 @@ function NavigationGate() {
       router.replace(
         onboardingCompleted
           ? "/(auth)/auth"
-          : "/(onboarding)/index",
+          : "/(onboarding)",
       );
     }
   }, [
@@ -67,7 +67,7 @@ function RootNavigator() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(onboarding)/index" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)/auth" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
       <NavigationGate />
