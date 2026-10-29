@@ -3,7 +3,7 @@ import { ORDER_STATUS } from "../constants/orderStatus";
 export interface CollectionOrder {
   id: string; citizen_id: string; collector_id: string | null; route_id: string | null;
   waste_type_id: string; status: string; quantity_kg: number; detalles: Record<string, unknown> | null;
-  latitude: number; longitude: number; address: string | null; created_at: string; updated_at: string;
+  delivery_coordinates: string | null; address: string | null; created_at: string; updated_at: string;
   notes?: string | null; photos?: string | null; waste_types?: Record<string, unknown>; profiles?: Record<string, unknown>;
 }
 /**
@@ -16,8 +16,7 @@ export interface CollectionOrder {
  * @property {string} status
  * @property {number} quantity_kg
  * @property {Object|null} detalles
- * @property {number} latitude
- * @property {number} longitude
+ * @property {string|null} delivery_coordinates
  * @property {string|null} address
  * @property {string} created_at
  * @property {string} updated_at
@@ -39,8 +38,7 @@ export function createOrder(data: Partial<CollectionOrder> = {}): CollectionOrde
     status: data.status ?? ORDER_STATUS.PENDING,
     quantity_kg: data.quantity_kg ?? 0,
     detalles: data.detalles ?? null,
-    latitude: data.latitude ?? 0,
-    longitude: data.longitude ?? 0,
+    delivery_coordinates: data.delivery_coordinates ?? null,
     address: data.address ?? null,
     created_at: data.created_at ?? new Date().toISOString(),
     updated_at: data.updated_at ?? new Date().toISOString(),

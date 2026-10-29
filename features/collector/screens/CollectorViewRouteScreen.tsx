@@ -19,6 +19,9 @@ import { useAuth } from "../../../hooks/useAuth";
 import { ORDER_STATUS } from "../../../constants/orderStatus";
 import { supabase } from "../../../lib/supabase";
 import { getErrorMessage } from "../../../utils/errors";
+import { distanceInMeters } from "../../../utils/geo";
+import { subscribeToOrders } from "../../../services/realtimeService";
+import { vehiclesService } from "../../../services/vehiclesService";
 
 const CALI_REGION: Region = {
   latitude: 3.4516,
@@ -35,6 +38,30 @@ type RouteOrder = {
   address?: string | null;
   status: string;
 };
+
+type RawRouteOrder = {
+  id: string;
+  latitud: number | string | null;
+  longitud: number | string | null;
+  direccion?: string | null;
+  estado?: string | null;
+  address?: string | null;
+  status?: string | null;
+};
+
+function normalizeRouteOrder(order: RawRouteOrder): RouteOrder {
+  return {
+    id: order.id,
+    latitud: order.latitud,
+    longitud: order.longitud,
+    direccion: order.direccion ?? order.address ?? null,
+    address: order.address ?? order.direccion ?? null,
+    status: order.estado ?? order.status ?? "",
+  };
+}
+
+const PUBLISH_INTERVAL_MS = 12000;
+const PUBLISH_DISTANCE_METERS = 40;
 
 function coordinateValue(value: number | string | null): number | null {
   if (value === null || value === "") return null;
@@ -94,6 +121,11 @@ export default function CollectorViewRouteScreen() {
   const insets = useSafeAreaInsets();
   const mapRef = useRef<MapView>(null);
   const hasFittedRoute = useRef(false);
+  const isRouteActiveRef = useRef(false);
+  const lastPublishedRef = useRef<
+    { latitude: number; longitude: number; at: number } | null
+  >(null);
+  const routeReloadTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [location, setLocation] = useState<LatLng | null>(null);
   const [orders, setOrders] = useState<RouteOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -168,7 +200,9 @@ export default function CollectorViewRouteScreen() {
       if (routeResult.error) throw routeResult.error;
       if (activeOrderResult.error) throw activeOrderResult.error;
 
-      const routeOrders = (routeResult.data ?? []) as RouteOrder[];
+      const routeOrders = ((routeResult.data ?? []) as RawRouteOrder[]).map(
+        normalizeRouteOrder,
+      );
       setOrders(routeOrders);
       setIsRouteActive(
         routeOrders.some((order) => order.status === ORDER_STATUS.IN_ROUTE) ||
@@ -185,7 +219,29 @@ export default function CollectorViewRouteScreen() {
   useFocusEffect(
     useCallback(() => {
       void loadRoute();
-    }, [loadRoute]),
+
+      if (!user?.id) return;
+
+      const unsubscribe = subscribeToOrders(
+        "collector_id",
+        user.id,
+        () => {
+          if (routeReloadTimeout.current) clearTimeout(routeReloadTimeout.current);
+          routeReloadTimeout.current = setTimeout(() => {
+            routeReloadTimeout.current = null;
+            void loadRoute();
+          }, 500);
+        },
+      );
+
+      return () => {
+        if (routeReloadTimeout.current) {
+          clearTimeout(routeReloadTimeout.current);
+          routeReloadTimeout.current = null;
+        }
+        unsubscribe();
+      };
+    }, [loadRoute, user?.id]),
   );
 
   useEffect(() => {
@@ -245,6 +301,45 @@ export default function CollectorViewRouteScreen() {
       subscription?.remove();
     };
   }, []);
+
+  useEffect(() => {
+    isRouteActiveRef.current = isRouteActive;
+  }, [isRouteActive]);
+
+  const publishLocation = useCallback(async (nextLocation: LatLng) => {
+    if (!isRouteActiveRef.current) return;
+
+    const now = Date.now();
+    const last = lastPublishedRef.current;
+
+    if (last) {
+      const elapsed = now - last.at;
+      const moved = distanceInMeters(last, nextLocation);
+      if (elapsed < PUBLISH_INTERVAL_MS && moved < PUBLISH_DISTANCE_METERS) {
+        return;
+      }
+    }
+
+    lastPublishedRef.current = { ...nextLocation, at: now };
+
+    try {
+      await vehiclesService.updateMyLocation(
+        nextLocation.latitude,
+        nextLocation.longitude,
+      );
+    } catch (error) {
+      lastPublishedRef.current = last;
+      console.error(
+        "No se pudo publicar la ubicación del vehículo:",
+        error,
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!location) return;
+    void publishLocation(location);
+  }, [location, publishLocation]);
 
   useEffect(() => {
     if (

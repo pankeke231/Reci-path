@@ -77,6 +77,15 @@ export default function LoginScreen({ navigation }: { navigation: Navigation }) 
 
       <Button title="Entrar" onPress={handleLogin} loading={loading} />
 
+      <Pressable
+        onPress={() => navigation.navigate("ForgotPassword")}
+        style={styles.forgotButton}
+        accessibilityRole="button"
+        accessibilityLabel="Recuperar contraseña"
+      >
+        <Text style={styles.forgotText}>¿Olvidaste tu contraseña?</Text>
+      </Pressable>
+
       <Button
         title="Crear cuenta nueva"
         variant="secondary"
@@ -129,5 +138,15 @@ const styles = StyleSheet.create({
   },
   secondaryBtn: {
     marginTop: SPACING.sm,
+  },
+  forgotButton: {
+    alignSelf: "center",
+    paddingVertical: SPACING.md,
+  },
+  forgotText: {
+    ...TYPOGRAPHY.caption,
+    color: COLORS.green,
+    fontWeight: "600",
+    fontSize: 14,
   },
 });

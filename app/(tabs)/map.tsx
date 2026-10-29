@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import MapView, { Marker, type Region } from "react-native-maps";
 import * as Location from "expo-location";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { supabase } from "@/lib/supabase";
+import {
+  subscribeToMapChanges,
+  type RealtimeStatus,
+} from "@/services/realtimeService";
 
 const CALI_REGION: Region = {
   latitude: 3.4516,
@@ -16,6 +21,8 @@ const CALI_REGION: Region = {
   latitudeDelta: 0.01,
   longitudeDelta: 0.01,
 };
+
+const REALTIME_DEBOUNCE_MS = 400;
 
 type LocationStatus = "loading" | "granted" | "denied" | "error";
 
@@ -65,8 +72,26 @@ function getVehicleDistance(vehicle: NearbyVehicle): number {
   return distance !== null && distance >= 0 ? Math.round(distance) : 0;
 }
 
+function getLiveLabel(status: RealtimeStatus): string {
+  switch (status) {
+    case "connected":
+      return "En vivo";
+    case "connecting":
+      return "Conectando...";
+    case "error":
+      return "Sin conexión en vivo";
+    default:
+      return "En vivo pausado";
+  }
+}
+
 export default function MapScreen() {
   const insets = useSafeAreaInsets();
+  const mapRef = useRef<MapView>(null);
+  const locationRef = useRef<Location.LocationObjectCoords | null>(null);
+  const hasCenteredOnLocation = useRef(false);
+  const reloadTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [location, setLocation] =
     useState<Location.LocationObjectCoords | null>(null);
   const [status, setStatus] = useState<LocationStatus>("loading");
@@ -75,6 +100,52 @@ export default function MapScreen() {
   const [vehiclesLoading, setVehiclesLoading] = useState(false);
   const [vehiclesError, setVehiclesError] = useState(false);
   const [ordersError, setOrdersError] = useState(false);
+  const [liveStatus, setLiveStatus] = useState<RealtimeStatus>("connecting");
+
+  const loadMapData = useCallback(async () => {
+    const coords = locationRef.current;
+    if (!coords) return;
+
+    setVehiclesLoading(true);
+    setVehiclesError(false);
+    setOrdersError(false);
+
+    try {
+      const [vehiclesResult, ordersResult] = await Promise.all([
+        supabase.rpc("buscar_camiones_cercanos", {
+          orden_lat: coords.latitude,
+          orden_long: coords.longitude,
+        }),
+        supabase.rpc("buscar_solicitudes_pendientes"),
+      ]);
+
+      if (vehiclesResult.error) {
+        console.error(
+          "No se pudieron cargar los camiones cercanos:",
+          vehiclesResult.error,
+        );
+        setVehiclesError(true);
+      } else {
+        setVehicles(vehiclesResult.data ?? []);
+      }
+
+      if (ordersResult.error) {
+        console.error(
+          "No se pudieron cargar las solicitudes pendientes:",
+          ordersResult.error,
+        );
+        setOrdersError(true);
+      } else {
+        setOrders(ordersResult.data ?? []);
+      }
+    } catch (error) {
+      console.error("No se pudieron cargar los datos del mapa:", error);
+      setVehiclesError(true);
+      setOrdersError(true);
+    } finally {
+      setVehiclesLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     let isActive = true;
@@ -114,78 +185,62 @@ export default function MapScreen() {
   useEffect(() => {
     if (!location) return;
 
-    let isActive = true;
+    locationRef.current = location;
+    void loadMapData();
 
-    const loadNearbyVehicles = async () => {
-      setVehiclesLoading(true);
-      setVehiclesError(false);
-      setOrdersError(false);
+    if (!hasCenteredOnLocation.current) {
+      hasCenteredOnLocation.current = true;
+      mapRef.current?.animateToRegion(
+        {
+          latitude: location.latitude,
+          longitude: location.longitude,
+          latitudeDelta: CALI_REGION.latitudeDelta,
+          longitudeDelta: CALI_REGION.longitudeDelta,
+        },
+        600,
+      );
+    }
+  }, [location, loadMapData]);
 
-      try {
-        const [vehiclesResult, ordersResult] = await Promise.all([
-          supabase.rpc("buscar_camiones_cercanos", {
-            orden_lat: location.latitude,
-            orden_long: location.longitude,
-          }),
-          supabase.rpc("buscar_solicitudes_pendientes"),
-        ]);
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
 
-        if (!isActive) return;
+      // Recupera eventos perdidos mientras la pestaña estuvo sin foco.
+      if (locationRef.current) void loadMapData();
 
-        console.log("Camiones recibidos de Supabase:", vehiclesResult.data);
+      // Realtime como señal: cualquier cambio en pedidos o vehículos
+      // dispara un refetch con debounce de las RPC del mapa.
+      const unsubscribe = subscribeToMapChanges(
+        () => {
+          if (reloadTimeout.current) clearTimeout(reloadTimeout.current);
 
-        if (vehiclesResult.error) {
-          console.error(
-            "No se pudieron cargar los camiones cercanos:",
-            vehiclesResult.error,
-          );
-          setVehiclesError(true);
-        } else {
-          setVehicles(vehiclesResult.data ?? []);
+          reloadTimeout.current = setTimeout(() => {
+            reloadTimeout.current = null;
+            if (isActive) void loadMapData();
+          }, REALTIME_DEBOUNCE_MS);
+        },
+        setLiveStatus,
+      );
+
+      return () => {
+        isActive = false;
+        if (reloadTimeout.current) {
+          clearTimeout(reloadTimeout.current);
+          reloadTimeout.current = null;
         }
-
-        if (ordersResult.error) {
-          console.error(
-            "No se pudieron cargar las solicitudes pendientes:",
-            ordersResult.error,
-          );
-          setOrdersError(true);
-        } else {
-          setOrders(ordersResult.data ?? []);
-        }
-      } catch (error) {
-        console.error("No se pudieron cargar los datos del mapa:", error);
-        if (isActive) {
-          setVehiclesError(true);
-          setOrdersError(true);
-        }
-      } finally {
-        if (isActive) setVehiclesLoading(false);
-      }
-    };
-
-    void loadNearbyVehicles();
-
-    return () => {
-      isActive = false;
-    };
-  }, [location]);
-
-  const initialRegion: Region = location
-    ? {
-        latitude: location.latitude,
-        longitude: location.longitude,
-        latitudeDelta: CALI_REGION.latitudeDelta,
-        longitudeDelta: CALI_REGION.longitudeDelta,
-      }
-    : CALI_REGION;
+        unsubscribe();
+        setLiveStatus("disconnected");
+      };
+    }, [loadMapData]),
+  );
 
   return (
     <View style={styles.container}>
       <MapView
-        key={location ? "current-location" : "cali"}
+        ref={mapRef}
         style={StyleSheet.absoluteFillObject}
-        initialRegion={initialRegion}
+        initialRegion={CALI_REGION}
         showsUserLocation={status === "granted"}
       >
         {vehicles?.map((vehicle, index) => {
@@ -251,7 +306,27 @@ export default function MapScreen() {
       </MapView>
 
       <View style={[styles.header, { top: insets.top + 12 }]}>
-        <Text style={styles.title}>Mi ubicación</Text>
+        <View style={styles.headerRow}>
+          <Text style={styles.title}>Mi ubicación</Text>
+          <View
+            style={[
+              styles.liveBadge,
+              liveStatus === "connected"
+                ? styles.liveBadgeActive
+                : styles.liveBadgeInactive,
+            ]}
+          >
+            <View
+              style={[
+                styles.liveDot,
+                liveStatus === "connected"
+                  ? styles.liveDotActive
+                  : styles.liveDotInactive,
+              ]}
+            />
+            <Text style={styles.liveText}>{getLiveLabel(liveStatus)}</Text>
+          </View>
+        </View>
         <Text style={styles.subtitle}>
           {vehicles.length > 0
             ? `Camión más cercano: ${vehicles[0].placa_camion ?? vehicles[0].placa ?? "Sin placa"} a ${getVehicleDistance(vehicles[0])}m`
@@ -336,10 +411,49 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#3d4a3e",
   },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+  },
   title: {
     color: "#d8e3fb",
     fontSize: 18,
     fontWeight: "700",
+  },
+  liveBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  liveBadgeActive: {
+    backgroundColor: "rgba(16, 185, 129, 0.15)",
+    borderColor: "rgba(16, 185, 129, 0.5)",
+  },
+  liveBadgeInactive: {
+    backgroundColor: "rgba(148, 163, 184, 0.12)",
+    borderColor: "rgba(148, 163, 184, 0.4)",
+  },
+  liveDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+  },
+  liveDotActive: {
+    backgroundColor: "#10B981",
+  },
+  liveDotInactive: {
+    backgroundColor: "#94A3B8",
+  },
+  liveText: {
+    color: "#d8e3fb",
+    fontSize: 11,
+    fontWeight: "600",
   },
   subtitle: {
     color: "#bbcbbb",

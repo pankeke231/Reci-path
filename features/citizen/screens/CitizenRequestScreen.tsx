@@ -12,6 +12,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
 import { LinearGradient } from "expo-linear-gradient";
 import { useAuth } from "../../../hooks/useAuth";
 import { useOrders } from "../../../hooks/useOrders";
@@ -26,6 +27,7 @@ import COLORS from "../../../constants/colors";
 import { RADIUS, SPACING, TYPOGRAPHY } from "../../../ui/theme/spacing";
 import { Screen } from "../../../ui/components";
 import { getErrorMessage } from "../../../utils/errors";
+import { toEwktPoint } from "../../../utils/geo";
 import type { ReactNode } from "react";
 import { imageStorageService } from "../../../services/imageStorageService";
 
@@ -161,6 +163,17 @@ export default function CitizenRequestScreen() {
         throw new Error("Debes iniciar sesión para crear un pedido.");
       }
 
+      const permission = await Location.requestForegroundPermissionsAsync();
+      if (permission.status !== "granted") {
+        throw new Error(
+          "Necesitamos acceso a tu ubicación GPS para ubicar la recogida en el mapa.",
+        );
+      }
+
+      const currentPosition = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+
       if (wastePhoto) {
         uploadedPhotoPath = await imageStorageService.upload(
           "Residue",
@@ -176,6 +189,7 @@ export default function CitizenRequestScreen() {
       await createOrder({
         waste_type_id: selectedWasteTypes[0].id,
         address: address.trim(),
+        delivery_coordinates: toEwktPoint(currentPosition.coords),
         detalles: {
           pickup_date: isoDate,
           description: description.trim(),

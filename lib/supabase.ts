@@ -13,6 +13,8 @@ export const supabase = createClient(supabaseUrl, supabasePublishableKey, {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,
+    // PKCE permite canjear el enlace de recuperación con `?code=` en la app.
+    flowType: 'pkce',
   },
 })
 

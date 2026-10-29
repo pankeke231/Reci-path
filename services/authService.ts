@@ -3,6 +3,7 @@ import { ROLES } from "../constants/roles";
 import { createUserProfile } from "../models/user";
 import { normalizeDocumentId } from "../utils/validators";
 import { supabase } from "../lib/supabase";
+import { parseAuthLink } from "../utils/authLink";
 import type { UserProfile, UserRole } from "../models/user";
 export interface SignUpInput {
   email: string; password: string; documentId: string; firstNames: string;
@@ -74,7 +75,7 @@ export const authService = {
     const first_names = firstNames.trim();
     const last_names = lastNames.trim();
     const full_name = `${first_names} ${last_names}`.trim();
-    const userRole = role || ROLES.CITIZEN;
+    const userRole = (role || ROLES.CITIZEN) as UserRole;
 
     const { data, error } = await supabase.auth.signUp({
       email: email.trim().toLowerCase(),
@@ -129,6 +130,80 @@ export const authService = {
 
     if (error) throw error;
     return createUserProfile(data);
+  },
+
+  /**
+   * Envía el correo de recuperación de contraseña.
+   * @param {string} email
+   * @param {string} redirectTo URL de la app que recibirá el enlace
+   */
+  async requestPasswordReset(email: string, redirectTo: string) {
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      email.trim().toLowerCase(),
+      { redirectTo },
+    );
+    if (error) throw error;
+  },
+
+  /**
+   * Define la nueva contraseña para la sesión de recuperación activa.
+   * @param {string} password
+   */
+  async updatePassword(password: string) {
+    const { data, error } = await supabase.auth.updateUser({ password });
+    if (error) throw error;
+    return data.user;
+  },
+
+  /**
+   * Canjea el `code` del enlace de recuperación (flujo PKCE) por una sesión.
+   * @param {string} code
+   */
+  async exchangeRecoveryCode(code: string) {
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) throw error;
+    return data.session;
+  },
+
+  /**
+   * Restaura la sesión desde un enlace de recuperación con tokens
+   * en el fragmento (flujo implícito) o `token_hash`.
+   * @param {string} url
+   */
+  async restoreSessionFromUrl(url: string) {
+    const link = parseAuthLink(url);
+
+    if (link.error || link.errorDescription) {
+      throw new Error(
+        link.errorDescription ||
+          link.error ||
+          "El enlace de recuperación no es válido.",
+      );
+    }
+
+    if (link.accessToken && link.refreshToken) {
+      const { data, error } = await supabase.auth.setSession({
+        access_token: link.accessToken,
+        refresh_token: link.refreshToken,
+      });
+      if (error) throw error;
+      return data.session;
+    }
+
+    if (link.tokenHash && (!link.type || link.type === "recovery")) {
+      const { data, error } = await supabase.auth.verifyOtp({
+        token_hash: link.tokenHash,
+        type: "recovery",
+      });
+      if (error) throw error;
+      return data.session;
+    }
+
+    if (link.code) {
+      return this.exchangeRecoveryCode(link.code);
+    }
+
+    return null;
   },
 
   async signOut() {
